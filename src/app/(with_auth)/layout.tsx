@@ -1,7 +1,6 @@
 import { UserSchema } from "@/api/users/models/users";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { KanbanSidebar } from "@/components/Sidebar/Sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { PageLayout } from "@/models/models";
 import { ConfigContextProvider } from "@/providers/configProvider";
 import { cookies } from "next/headers";
@@ -18,13 +17,13 @@ export default async function WithAuthLayout({ children }: PageLayout) {
 
   return (
     <ConfigContextProvider user={user}>
-      <SidebarProvider>
+      <div>
         <KanbanSidebar />
         <div className="w-full overflow-y-auto">
           <Navbar />
           {children}
         </div>
-      </SidebarProvider>
+      </div>
     </ConfigContextProvider>
   );
 }

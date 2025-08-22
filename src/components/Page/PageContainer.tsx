@@ -11,7 +11,7 @@ export const PageContainer = ({
   className?: string;
 }) => {
   return (
-    <section id={pageName} className={cn("w-full min-h-[calc(100vh-48px)] bg-[#F2F4F7] pt-8 px-40", className)}>
+    <section id={pageName} className={cn("w-full min-h-[calc(100vh-48px)] bg-[#F2F4F7] py-8 px-40", className)}>
       {children}
     </section>
   );

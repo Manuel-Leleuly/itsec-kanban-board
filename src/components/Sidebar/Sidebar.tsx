@@ -13,7 +13,7 @@ export const KanbanSidebar = () => {
   const { user } = useConfigContext();
 
   return (
-    <div className="w-fit h-screen p-4 flex flex-col justify-between items-center bg-white border-r border-r-[#1D29391A]">
+    <div className="w-fit h-screen p-4 flex flex-col justify-between items-center bg-white border-r border-r-[#1D29391A] fixed">
       {/* content */}
       <div className="flex flex-col space-y-3.5">
         {/* Username */}

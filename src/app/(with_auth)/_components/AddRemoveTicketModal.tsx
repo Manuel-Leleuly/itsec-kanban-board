@@ -89,6 +89,7 @@ export const AddRemoveTicketModal = ({
                   placeholder="Description here..."
                   className="w-full"
                   disabled={isLoading}
+                  wrap="hard"
                 />
               </div>
             )}

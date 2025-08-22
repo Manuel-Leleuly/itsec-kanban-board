@@ -14,8 +14,6 @@ export default async function LoginPage() {
     console.log(error);
   }
 
-  console.log({ users });
-
   return (
     <section id="login" className="w-full min-h-screen flex">
       {/* Left Side */}
