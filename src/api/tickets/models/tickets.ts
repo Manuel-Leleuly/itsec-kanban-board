@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const TicketSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   title: z.string(),
   description: z.string(),
   assignees: z.array(z.string()),
@@ -18,7 +18,7 @@ export const TicketResponseSchema = z.array(TicketSchema);
 export type TicketResponseType = z.infer<typeof TicketResponseSchema>;
 
 export const CreateUpdateTicketReqBodySchema = z.object({
-  title: z.string(),
+  title: z.string().nonempty({ error: "Ticket Name is required" }),
   description: z.string(),
   assignees: z.array(z.string()),
   status: z.enum(["todo", "doing", "done"]),
