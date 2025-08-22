@@ -1,6 +1,10 @@
 "use client";
 
-import { CreateUpdateTicketReqBodySchema, TicketType } from "@/api/tickets/models/tickets";
+import {
+  CreateUpdateTicketReqBodySchema,
+  CreateUpdateTicketReqBodyType,
+  TicketType,
+} from "@/api/tickets/models/tickets";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { addTicket, updateTicket } from "./action";
@@ -17,7 +21,7 @@ export const useAddUpdateTicketLogic = ({
 
   const ticketMutation = useMutation({
     mutationKey: ["addUpdateTicket"],
-    mutationFn: async (value: Omit<TicketType, "id">) => {
+    mutationFn: async (value: CreateUpdateTicketReqBodyType) => {
       if (ticketData) {
         await updateTicket(ticketData.id, value);
       } else {
@@ -25,11 +29,11 @@ export const useAddUpdateTicketLogic = ({
       }
     },
     onSuccess: () => {
-      toast.success("Task successfully created");
+      toast.success(`Task successfully ${ticketData ? "updated" : "created"}`);
       onSuccess();
     },
     onError: () => {
-      toast.error("Failed to create task. Please try again");
+      toast.error(`Failed to ${ticketData ? "update" : "create"} task. Please try again`);
     },
   });
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAddUpdateTicketLogic } from "../_logic/useAddUpdateTicketLogic";
 import { CreateUpdateTicketReqBodySchema, TicketType } from "@/api/tickets/models/tickets";
@@ -12,7 +14,7 @@ import { useEffect } from "react";
 const TicketStatusEnum = CreateUpdateTicketReqBodySchema.shape.status.enum;
 type TicketStatusType = keyof typeof TicketStatusEnum;
 
-export const AddRemoveTicketModal = ({
+export const AddEditTicketModal = ({
   isOpen,
   onSuccess,
   onCancel,
@@ -31,7 +33,11 @@ export const AddRemoveTicketModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onCancel}>
-      <DialogContent>
+      <DialogContent
+        onInteractOutside={(e) => {
+          if (isLoading) e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{ticketData ? "Edit" : "Add"} a Task</DialogTitle>
         </DialogHeader>
@@ -199,7 +205,9 @@ export const AddRemoveTicketModal = ({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant={"outline"}>Cancel</Button>
+              <Button variant={"outline"} disabled={isLoading}>
+                Cancel
+              </Button>
             </DialogClose>
             <Button type="submit" disabled={isLoading} className="bg-blue-500 hover:bg-blue-600">
               {ticketData ? "Save" : "Submit"}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useConfigContext } from "@/providers/configProvider";
 import { useState } from "react";
 import z from "zod";
-import { AddRemoveTicketModal } from "../../_components/AddRemoveTicketModal";
+import { AddEditTicketModal } from "../../_components/AddEditTicketModal";
 import { sleepAsync } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -30,7 +30,7 @@ export const DashboardTitle = () => {
         </Button>
       </div>
 
-      <AddRemoveTicketModal
+      <AddEditTicketModal
         isOpen={selectedModal === Modals.ADD}
         onSuccess={async () => {
           setSelectedModal(null);

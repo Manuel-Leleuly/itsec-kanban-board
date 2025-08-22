@@ -8,6 +8,7 @@ import {
 } from "@/api/tickets/models/tickets";
 import { FetchUtil } from "@/utils/fetchUtils";
 import { NetworkUtils } from "@/utils/networkUtils";
+import { revalidatePath } from "next/cache";
 
 export const addTicket = async (reqBody: CreateUpdateTicketReqBodyType) => {
   const network = NetworkUtils.create();
@@ -25,4 +26,14 @@ export const updateTicket = async (ticketId: string, reqBody: CreateUpdateTicket
   if (!success) throw error;
 
   await FetchUtil.validateResponse<TicketType>(() => network.put(`/tickets/${ticketId}`, data), TicketSchema);
+};
+
+export const deleteTicket = async (ticketId: string, reqBody: CreateUpdateTicketReqBodyType) => {
+  const network = NetworkUtils.create();
+
+  const { data, success, error } = CreateUpdateTicketReqBodySchema.safeParse(reqBody);
+  if (!success) throw error;
+
+  await FetchUtil.validateResponse<TicketType>(() => network.put(`/tickets/${ticketId}`, data), TicketSchema);
+  revalidatePath("/");
 };

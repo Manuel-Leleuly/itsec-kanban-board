@@ -7,12 +7,13 @@ import { DashboardContent } from "./_components/DashboardContent";
 export default async function HomePage() {
   const network = NetworkUtils.create();
   const tickets = await TicketApi.getAllTickets(network);
+  const notDeletedTickets = tickets.filter((ticket) => ticket.deletedAt === "");
 
   return (
     <PageContainer pageName="home">
       <div className="w-full flex flex-col space-y-8">
         <DashboardTitle />
-        <DashboardContent tickets={tickets} />
+        <DashboardContent tickets={notDeletedTickets} />
       </div>
     </PageContainer>
   );
