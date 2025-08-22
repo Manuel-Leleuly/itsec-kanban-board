@@ -1,9 +1,10 @@
 import z from "zod";
 
 export const UserSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   email: z.email(),
+  password: z.string(),
   createdAt: z.string(),
 });
 
@@ -20,3 +21,10 @@ export const CreateUserReqBodySchema = z.object({
 });
 
 export type CreateUserReqBodyType = z.infer<typeof CreateUserReqBodySchema>;
+
+export const LoginReqBodySchema = z.object({
+  email: z.email(),
+  password: z.string({ error: "password is required" }),
+});
+
+export type LoginReqBodyType = z.infer<typeof LoginReqBodySchema>;

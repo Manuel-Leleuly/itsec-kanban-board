@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/providers/queryProvider";
 import { ProgressAppProvider } from "@/providers/progressAppProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("antialiased", inter.className)}>
         <ProgressAppProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <Toaster position="bottom-right" closeButton />
+          </QueryProvider>
         </ProgressAppProvider>
       </body>
     </html>

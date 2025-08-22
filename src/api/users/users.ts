@@ -7,7 +7,7 @@ export class UserApi {
     return await FetchUtil.validateResponse<UserResponseType>(() => network.get("/users"), UserResponseSchema);
   };
 
-  static getUserById = async (network: AxiosInstance, userId: number) => {
+  static getUserById = async (network: AxiosInstance, userId: string) => {
     return await FetchUtil.validateResponse<UserType>(() => network.get(`/users/${userId}`), UserSchema);
   };
 }
