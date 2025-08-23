@@ -5,11 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { TicketAssignee } from "../../_components/TicketAssignee";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export const TicketCard = ({ ticket }: { ticket: TicketType }) => {
-  const router = useRouter();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: ticket.id,
   });

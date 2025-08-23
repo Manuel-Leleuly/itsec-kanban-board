@@ -57,7 +57,6 @@ export const useDragAndDrop = <T extends { id: string }>({
 
   const handleDragEnd = useCallback(
     async (event: DragEndEvent) => {
-      console.log("handle drag end is called");
       const { active, over } = event;
       const activeId = active.id.toString();
       const overId = over ? over.id.toString() : null;
@@ -68,15 +67,14 @@ export const useDragAndDrop = <T extends { id: string }>({
       const activeIndex = dataObj[activeColumn].findIndex((data) => data.id === activeId);
       const overIndex = dataObj[overColumn].findIndex((data) => data.id === overId);
 
-      startTransition(() => {
+      startTransition(async () => {
         setOptimisticDataObj(
           updateDragEndData({ prevDataObj: dataObj, activeColumn, overColumn, activeIndex, overIndex })
         );
-      });
-
-      await dragEndMutation.mutateAsync({ data: dataObj[activeColumn][activeIndex], newColumnId: overColumn });
-
-      startTransition(() => {
+        await dragEndMutation.mutateAsync({ data: dataObj[activeColumn][activeIndex], newColumnId: overColumn });
+        setDataObj((prevDataObj) => {
+          return updateDragEndData({ prevDataObj, activeColumn, overColumn, activeIndex, overIndex });
+        });
         setOptimisticDataObj(null);
       });
     },
@@ -101,6 +99,7 @@ export const useDragAndDrop = <T extends { id: string }>({
     const newDataObj = ObjectUtils.cloneObject(prevDataObj);
     const activeData = newDataObj[activeColumn];
     const overData = newDataObj[overColumn];
+
     const activeIndex = activeData.findIndex((data) => data.id === activeId);
     const overIndex = overData.findIndex((data) => data.id === overId);
 
@@ -124,7 +123,9 @@ export const useDragAndDrop = <T extends { id: string }>({
     const activeId = active.id.toString();
     const overId = over?.id.toString() ?? null;
     const activeColumn: string | null = active.data.current?.sortable.containerId ?? null;
-    const overColumn: string | null = over?.data.current?.sortable.containerId ?? null;
+
+    // if over container id is null, that means the target container is empty
+    const overColumn: string | null = over?.data.current?.sortable.containerId ?? overId;
 
     if (!activeColumn || !overColumn || activeColumn === overColumn) return;
 

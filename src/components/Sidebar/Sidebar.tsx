@@ -8,52 +8,86 @@ import { MessageSvg } from "@/assets/icons/message";
 import { UserMultipleSvg } from "@/assets/icons/users";
 import { SettingSvg } from "@/assets/icons/setting";
 import { LogoutSvg } from "@/assets/icons/logout";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ReactNode } from "react";
+import { useLogoutLogic } from "./logic/useLogoutLogic";
 
 export const KanbanSidebar = () => {
   const { user } = useConfigContext();
+  const { onLogout } = useLogoutLogic();
 
   return (
     <div className="w-fit h-screen p-4 flex flex-col justify-between items-center bg-white border-r border-r-[#1D29391A]">
       {/* content */}
       <div className="flex flex-col space-y-3.5">
         {/* Username */}
-        <Button className="w-10 h-10 rounded-lg bg-[#2CBA7A] hover:bg-[#21925f] text-black flex justify-center items-center">
-          {user.name[0].toUpperCase()}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button className="w-10 h-10 rounded-lg bg-[#2CBA7A] hover:bg-[#21925f] text-black flex justify-center items-center">
+              {user.name[0].toUpperCase()}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{user.name}</p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Dashboard */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="Dashboard">
           <DashboardSvg />
-        </Button>
+        </SidebarButton>
 
         {/* File */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="File">
           <FileSvg />
-        </Button>
+        </SidebarButton>
 
         {/* Message */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="Message">
           <MessageSvg />
-        </Button>
+        </SidebarButton>
 
         {/* Users */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="Users">
           <UserMultipleSvg />
-        </Button>
+        </SidebarButton>
 
         {/* Setting */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="Setting">
           <SettingSvg />
-        </Button>
+        </SidebarButton>
       </div>
 
       {/* Footer */}
       <div>
         {/* Logout */}
-        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center">
+        <SidebarButton tooltipContent="Log Out" onClick={onLogout}>
           <LogoutSvg />
-        </Button>
+        </SidebarButton>
       </div>
     </div>
+  );
+};
+
+const SidebarButton = ({
+  tooltipContent,
+  children,
+  onClick,
+}: {
+  tooltipContent: string;
+  children: ReactNode;
+  onClick?: () => void;
+}) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant={"ghost"} className="w-10 h-10 rounded-lg flex justify-center items-center" onClick={onClick}>
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <p>{tooltipContent}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };

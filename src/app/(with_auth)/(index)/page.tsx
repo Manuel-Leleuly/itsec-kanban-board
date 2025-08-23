@@ -11,7 +11,7 @@ export default async function HomePage() {
 
   return (
     <PageContainer pageName="home">
-      <div className="w-full flex flex-col space-y-8">
+      <div className="w-full max-w-7xl flex flex-col space-y-8">
         <DashboardTitle />
         <DashboardContent tickets={notDeletedTickets} />
       </div>

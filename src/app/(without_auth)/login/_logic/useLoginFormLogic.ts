@@ -4,8 +4,8 @@ import { LoginReqBodySchema, LoginReqBodyType, UserResponseType } from "@/api/us
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../actions";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { ToastLib } from "@/lib/toastLib";
 
 export const useLoginFormLogic = (users: UserResponseType) => {
   const router = useRouter();
@@ -20,11 +20,11 @@ export const useLoginFormLogic = (users: UserResponseType) => {
       await login(selectedUser);
     },
     onSuccess: () => {
-      toast.success("Success log in. Redirecting...");
+      ToastLib.success("Success log in. Redirecting...");
       router.push("/");
     },
     onError: () => {
-      toast.error("Failed to log in. Please try again");
+      ToastLib.error("Failed to log in. Please try again");
     },
   });
 

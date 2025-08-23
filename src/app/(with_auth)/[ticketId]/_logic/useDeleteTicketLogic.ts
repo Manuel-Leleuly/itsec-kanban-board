@@ -3,7 +3,7 @@
 import { CreateUpdateTicketReqBodyType } from "@/api/tickets/models/tickets";
 import { useMutation } from "@tanstack/react-query";
 import { deleteTicket } from "../../_logic/action";
-import { toast } from "sonner";
+import { ToastLib } from "@/lib/toastLib";
 
 export const useDeleteTicketLogic = (onSuccess: () => void) => {
   const deleteMutation = useMutation({
@@ -12,11 +12,11 @@ export const useDeleteTicketLogic = (onSuccess: () => void) => {
       await deleteTicket(ticketId, reqBody);
     },
     onSuccess: () => {
-      toast.success("Task already deleted");
+      ToastLib.success("Task already deleted");
       onSuccess();
     },
     onError: () => {
-      toast.error("Failed to delete task. Please try again");
+      ToastLib.error("Failed to delete task. Please try again");
     },
   });
 

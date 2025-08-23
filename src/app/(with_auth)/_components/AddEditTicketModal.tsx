@@ -93,7 +93,7 @@ export const AddEditTicketModal = ({
                     field.handleChange(e.target.value);
                   }}
                   placeholder="Description here..."
-                  className="w-full"
+                  className="w-full break-all"
                   disabled={isLoading}
                   wrap="hard"
                 />

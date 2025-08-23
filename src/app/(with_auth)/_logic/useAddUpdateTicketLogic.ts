@@ -8,7 +8,7 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { addTicket, updateTicket } from "./action";
-import { toast } from "sonner";
+import { ToastLib } from "@/lib/toastLib";
 
 export const useAddUpdateTicketLogic = ({
   ticketData,
@@ -29,11 +29,11 @@ export const useAddUpdateTicketLogic = ({
       }
     },
     onSuccess: () => {
-      toast.success(`Task successfully ${ticketData ? "updated" : "created"}`);
+      ToastLib.success(`Task successfully ${ticketData ? "updated" : "created"}`);
       onSuccess();
     },
     onError: () => {
-      toast.error(`Failed to ${ticketData ? "update" : "create"} task. Please try again`);
+      ToastLib.error(`Failed to ${ticketData ? "update" : "create"} task. Please try again`);
     },
   });
 

@@ -11,7 +11,7 @@ export default async function LoginPage() {
     const network = NetworkUtils.create();
     users = await UserApi.getAllUsers(network);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   return (
