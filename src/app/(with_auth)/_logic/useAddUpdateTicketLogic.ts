@@ -56,5 +56,9 @@ export const useAddUpdateTicketLogic = ({
     canSubmitWhenInvalid: false,
   });
 
-  return { ticketForm, isLoading: ticketMutation.isPending, error: ticketMutation.error };
+  return {
+    ticketForm,
+    isLoading: ticketMutation.isPending,
+    error: ticketMutation.error,
+  };
 };
