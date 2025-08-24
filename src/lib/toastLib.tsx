@@ -38,7 +38,7 @@ const ToastComponent = ({
       <CardContent className="flex justify-between items-center space-x-5 px-2">
         <div className="flex items-center space-x-4 h-10">
           <div className={cn("w-1 rounded-full h-full bg-[#2CBA7A]", status === "error" && "bg-red-500")} />
-          <div className="font-normal">{children}</div>
+          <div className="font-normal text-nowrap">{children}</div>
         </div>
         <Button onClick={() => toast.dismiss(id)} variant={"ghost"}>
           Got it

@@ -1,19 +1,25 @@
 "use client";
 
-import { UserResponseType } from "@/api/users/models/users";
 import { useState } from "react";
 import { useLoginFormLogic } from "../_logic/useLoginFormLogic";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/providers/authProvider";
+import Link from "next/link";
 
-export const LoginForm = ({ users }: { users: UserResponseType }) => {
+export const LoginForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { users } = useAuthContext();
   const { loginForm, isLoading, error } = useLoginFormLogic(users);
 
-  const getErrorMessage = (): string => {
-    return error ? error.message : "";
+  const getErrorMessage = () => {
+    if (error) {
+      const error_data = JSON.parse(error.message);
+      return error_data.error_message;
+    }
+    return "";
   };
 
   return (
@@ -43,7 +49,17 @@ export const LoginForm = ({ users }: { users: UserResponseType }) => {
               disabled={isLoading}
             />
             {!!field.state.meta.errors.length && (
-              <em className="text-red-500">{field.state.meta.errors.map((error) => error?.message).join(", ")}</em>
+              <em className="text-red-500 text-sm">
+                {field.state.meta.errors
+                  .map((error) => error?.message)
+                  .filter(Boolean)
+                  .map((errorMessage, index) => (
+                    <span key={errorMessage! + index}>
+                      {errorMessage}
+                      <br />
+                    </span>
+                  ))}
+              </em>
             )}
           </div>
         )}
@@ -81,13 +97,31 @@ export const LoginForm = ({ users }: { users: UserResponseType }) => {
               </button>
             </div>
             {!!field.state.meta.errors.length && (
-              <em className="text-red-500">{field.state.meta.errors.map((error) => error?.message).join(", ")}</em>
+              <em className="text-red-500 text-sm">
+                {field.state.meta.errors
+                  .map((error) => error?.message)
+                  .filter(Boolean)
+                  .map((errorMessage, index) => (
+                    <span key={errorMessage! + index}>
+                      {errorMessage}
+                      <br />
+                    </span>
+                  ))}
+              </em>
             )}
           </div>
         )}
       </loginForm.Field>
 
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-2 items-center">
+        <div className="flex items-center space-x-2 text-sm">
+          <p>Don't have an account?</p>
+          <Link href={"/register"}>
+            <Button type="button" variant={"link"} className="text-blue-500 font-normal px-0">
+              Sign up
+            </Button>
+          </Link>
+        </div>
         <Button
           type="submit"
           className="w-full hover:cursor-pointer disabled:cursor-not-allowed"
@@ -95,6 +129,7 @@ export const LoginForm = ({ users }: { users: UserResponseType }) => {
         >
           {isLoading ? "Logging in..." : "Login"}
         </Button>
+        <em className="text-red-500 text-sm">{getErrorMessage()}</em>
       </div>
     </form>
   );

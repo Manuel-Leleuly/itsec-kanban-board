@@ -12,12 +12,16 @@ export const useLoginFormLogic = (users: UserResponseType) => {
 
   const loginMutation = useMutation({
     mutationKey: ["login"],
-    mutationFn: async (value: LoginReqBodyType) => {
-      const selectedUser = users.find((user) => user.email === value.email && user.password === value.password);
+    mutationFn: async (reqBody: LoginReqBodyType) => {
+      const selectedUser = users.find((user) => user.email === reqBody.email);
       if (!selectedUser) {
         throw new Error("wrong email and/or password");
       }
-      await login(selectedUser);
+
+      const errorData = await login(reqBody, selectedUser);
+      if (errorData) {
+        throw new Error(JSON.stringify(errorData));
+      }
     },
     onSuccess: () => {
       ToastLib.success("Success log in. Redirecting...");
@@ -35,7 +39,6 @@ export const useLoginFormLogic = (users: UserResponseType) => {
     },
     validators: {
       onSubmit: LoginReqBodySchema,
-      onChange: LoginReqBodySchema,
     },
     onSubmit: ({ value }) => {
       loginMutation.mutate(value);

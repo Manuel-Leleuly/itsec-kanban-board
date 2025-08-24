@@ -15,8 +15,8 @@ export const useDragAndDrop = <T extends { id: string }>({
   dataObj: Record<string, T[]>;
   setDataObj: Dispatch<SetStateAction<Record<string, T[]>>>;
   onDragEndSubmit: (data: T, newColumnId: string) => Promise<void>;
-  onDragEndSuccess?: () => void;
-  onDragEndError?: () => void;
+  onDragEndSuccess?: (data: void, variables: { data: T; newColumnId: string }, context: unknown) => void;
+  onDragEndError?: (error: Error, variables: { data: T; newColumnId: string }, context: unknown) => void;
 }) => {
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -61,7 +61,10 @@ export const useDragAndDrop = <T extends { id: string }>({
       const activeId = active.id.toString();
       const overId = over ? over.id.toString() : null;
       const activeColumn: string | null = active.data.current?.sortable.containerId ?? null;
-      const overColumn: string | null = over?.data.current?.sortable.containerId ?? null;
+
+      // if over container id is null, that means the target container is empty
+      const overColumn: string | null = over?.data.current?.sortable.containerId ?? overId;
+
       if (!activeColumn || !overColumn || activeColumn !== overColumn) return;
 
       const activeIndex = dataObj[activeColumn].findIndex((data) => data.id === activeId);
@@ -71,7 +74,9 @@ export const useDragAndDrop = <T extends { id: string }>({
         setOptimisticDataObj(
           updateDragEndData({ prevDataObj: dataObj, activeColumn, overColumn, activeIndex, overIndex })
         );
+
         await dragEndMutation.mutateAsync({ data: dataObj[activeColumn][activeIndex], newColumnId: overColumn });
+
         setDataObj((prevDataObj) => {
           return updateDragEndData({ prevDataObj, activeColumn, overColumn, activeIndex, overIndex });
         });
