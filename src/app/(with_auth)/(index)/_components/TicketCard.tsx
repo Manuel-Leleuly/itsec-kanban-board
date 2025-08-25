@@ -6,8 +6,9 @@ import { TicketAssignee } from "../../_components/TicketAssignee";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export const TicketCard = ({ ticket }: { ticket: TicketType }) => {
+export const TicketCard = ({ ticket, className }: { ticket: TicketType; className?: string }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: ticket.id,
   });
@@ -19,7 +20,7 @@ export const TicketCard = ({ ticket }: { ticket: TicketType }) => {
       {...listeners}
       style={{ transform: CSS.Translate.toString(transform), transition }}
     >
-      <Card className="w-[348px] rounded-sm">
+      <Card className={cn("w-[348px] rounded-sm", className)}>
         <CardHeader>
           <CardTitle>
             <div className="w-full flex justify-between items-center">

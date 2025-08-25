@@ -1,12 +1,14 @@
 "use client";
 
-import { closestCorners, DndContext } from "@dnd-kit/core";
+import { closestCorners, DndContext, DragOverlay } from "@dnd-kit/core";
 import { TicketType } from "@/api/tickets/models/tickets";
 import { BoardColumn } from "./BoardColumn";
 import { useTicketDataLogic } from "../_logic/useTicketDataLogic";
+import { TicketCard } from "./TicketCard";
 
 export const DashboardContent = ({ tickets }: { tickets: TicketType[] }) => {
-  const { ticketData, sensors, handleDragEnd, handleDragOver } = useTicketDataLogic(tickets);
+  const { ticketData, sensors, handleDragEnd, handleDragOver, handleDragStart, activeTicket } =
+    useTicketDataLogic(tickets);
 
   return (
     <DndContext
@@ -14,12 +16,19 @@ export const DashboardContent = ({ tickets }: { tickets: TicketType[] }) => {
       collisionDetection={closestCorners}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
+      onDragStart={handleDragStart}
     >
-      <div className="flex justify-between gap-8 flex-nowrap overflow-auto">
-        <BoardColumn columnName="TO DO" columnId="todo" tickets={ticketData.todo} />
-        <BoardColumn columnName="DOING" columnId="doing" tickets={ticketData.doing} />
-        <BoardColumn columnName="DONE" columnId="done" tickets={ticketData.done} />
+      <div className="flex justify-between gap-8 flex-nowrap overflow-x-auto no-scrollbar">
+        <BoardColumn columnName="TO DO" columnId="todo" tickets={ticketData.todo} activeTicket={activeTicket} />
+        <BoardColumn columnName="DOING" columnId="doing" tickets={ticketData.doing} activeTicket={activeTicket} />
+        <BoardColumn columnName="DONE" columnId="done" tickets={ticketData.done} activeTicket={activeTicket} />
       </div>
+
+      {activeTicket && (
+        <DragOverlay>
+          <TicketCard ticket={activeTicket} />
+        </DragOverlay>
+      )}
     </DndContext>
   );
 };

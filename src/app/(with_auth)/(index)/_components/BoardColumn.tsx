@@ -11,11 +11,13 @@ export const BoardColumn = ({
   columnId,
   tickets,
   className,
+  activeTicket,
 }: {
   columnName: string;
   columnId: string;
   tickets: TicketType[];
   className?: string;
+  activeTicket: TicketType | null;
 }) => {
   const { setNodeRef } = useDroppable({ id: columnId });
 
@@ -29,7 +31,11 @@ export const BoardColumn = ({
         <h3 className="text-[#667085] text-sm font-bold">{columnName}</h3>
         <div ref={setNodeRef} className="flex flex-col space-y-4">
           {tickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} />
+            <TicketCard
+              key={ticket.id}
+              ticket={ticket}
+              className={cn(activeTicket?.id === ticket.id && "opacity-50")}
+            />
           ))}
         </div>
       </div>

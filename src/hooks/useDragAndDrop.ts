@@ -1,9 +1,9 @@
 import { ObjectUtils } from "@/utils/objectUtils";
 import { KeyboardSensor, MouseSensor, useSensor, useSensors, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
-import { Coordinates } from "@dnd-kit/core/dist/types";
+import { Coordinates, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useMutation } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, startTransition, useCallback, useOptimistic } from "react";
+import { Dispatch, SetStateAction, startTransition, useOptimistic, useState } from "react";
 
 export const useDragAndDrop = <T extends { id: string }>({
   dataObj,
@@ -25,7 +25,9 @@ export const useDragAndDrop = <T extends { id: string }>({
     })
   );
 
-  const [optimisticDataObj, setOptimisticDataObj] = useOptimistic<typeof dataObj | null>(null);
+  const [optimisticDataObj, setOptimisticDataObj] = useOptimistic<typeof dataObj | null>(dataObj);
+
+  const [activeData, setActiveData] = useState<T | null>(null);
 
   const dragEndMutation = useMutation({
     mutationKey: ["dragEndSubmit"],
@@ -34,57 +36,55 @@ export const useDragAndDrop = <T extends { id: string }>({
     onError: onDragEndError,
   });
 
-  const updateDragEndData = useCallback(
-    ({
-      prevDataObj,
-      activeColumn,
-      overColumn,
-      activeIndex,
-      overIndex,
-    }: {
-      prevDataObj: typeof dataObj;
-      activeColumn: string;
-      overColumn: string;
-      activeIndex: number;
-      overIndex: number;
-    }) => {
-      const newDataObj = ObjectUtils.cloneObject(prevDataObj);
-      newDataObj[activeColumn] = arrayMove(newDataObj[overColumn], activeIndex, overIndex);
-      return newDataObj;
-    },
-    []
-  );
+  const updateDragEndData = ({
+    prevDataObj,
+    activeColumn,
+    overColumn,
+    activeIndex,
+    overIndex,
+  }: {
+    prevDataObj: typeof dataObj;
+    activeColumn: string;
+    overColumn: string;
+    activeIndex: number;
+    overIndex: number;
+  }) => {
+    const newDataObj = ObjectUtils.cloneObject(prevDataObj);
+    newDataObj[activeColumn] = arrayMove(newDataObj[overColumn], activeIndex, overIndex);
+    return newDataObj;
+  };
 
-  const handleDragEnd = useCallback(
-    async (event: DragEndEvent) => {
-      const { active, over } = event;
-      const activeId = active.id.toString();
-      const overId = over ? over.id.toString() : null;
-      const activeColumn: string | null = active.data.current?.sortable.containerId ?? null;
+  const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveData(null);
+    const { active, over } = event;
+    const activeId = active.id.toString();
+    const overId = over ? over.id.toString() : null;
+    const activeColumn: string | null = active.data.current?.sortable.containerId ?? null;
 
-      // if over container id is null, that means the target container is empty
-      const overColumn: string | null = over?.data.current?.sortable.containerId ?? overId;
+    // if over container id is null, that means the target container is empty
+    const overColumn: string | null = over?.data.current?.sortable.containerId ?? overId;
 
-      if (!activeColumn || !overColumn || activeColumn !== overColumn) return;
+    if (!activeColumn || !overColumn || activeColumn !== overColumn) return;
 
-      const activeIndex = dataObj[activeColumn].findIndex((data) => data.id === activeId);
-      const overIndex = dataObj[overColumn].findIndex((data) => data.id === overId);
+    const activeIndex = dataObj[activeColumn].findIndex((data) => data.id === activeId);
+    const overIndex = dataObj[overColumn].findIndex((data) => data.id === overId);
 
-      startTransition(async () => {
-        setOptimisticDataObj(
-          updateDragEndData({ prevDataObj: dataObj, activeColumn, overColumn, activeIndex, overIndex })
-        );
-
-        await dragEndMutation.mutateAsync({ data: dataObj[activeColumn][activeIndex], newColumnId: overColumn });
-
-        setDataObj((prevDataObj) => {
+    startTransition(async () => {
+      setOptimisticDataObj((prevDataObj) => {
+        if (prevDataObj) {
           return updateDragEndData({ prevDataObj, activeColumn, overColumn, activeIndex, overIndex });
-        });
-        setOptimisticDataObj(null);
+        }
+        return null;
       });
-    },
-    [dataObj, updateDragEndData]
-  );
+
+      await dragEndMutation.mutateAsync({ data: dataObj[activeColumn][activeIndex], newColumnId: overColumn });
+
+      setDataObj((prevDataObj) => {
+        return updateDragEndData({ prevDataObj, activeColumn, overColumn, activeIndex, overIndex });
+      });
+      setOptimisticDataObj(null);
+    });
+  };
 
   const updateDragOverData = ({
     prevDataObj,
@@ -139,5 +139,26 @@ export const useDragAndDrop = <T extends { id: string }>({
     });
   };
 
-  return { sensors, handleDragEnd, handleDragOver, newTicketData: optimisticDataObj ?? dataObj };
+  const handleDragStart = (event: DragStartEvent) => {
+    const activeId = event.active.id;
+    const activeColumn = event.active.data.current?.sortable.containerId ?? null;
+    if (!activeColumn) return;
+
+    const selectedData = dataObj[activeColumn].find((data) => data.id === activeId);
+    if (!selectedData) return;
+    setActiveData(selectedData);
+  };
+
+  return {
+    sensors,
+    handleDragEnd,
+    handleDragOver,
+    handleDragStart,
+    dndData: optimisticDataObj ?? dataObj,
+    /**
+     * WARNING: make sure `handleDragStart` is implemented in the context,
+     * otherwise this will result to `null` no matter what
+     */
+    activeData,
+  };
 };

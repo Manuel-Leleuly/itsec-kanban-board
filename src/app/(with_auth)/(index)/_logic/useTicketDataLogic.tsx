@@ -25,7 +25,14 @@ export const useTicketDataLogic = (tickets: TicketType[]) => {
     return ticketMap;
   });
 
-  const { sensors, handleDragEnd, handleDragOver, newTicketData } = useDragAndDrop({
+  const {
+    sensors,
+    handleDragEnd,
+    handleDragOver,
+    handleDragStart,
+    dndData: newTicketData,
+    activeData: activeTicket,
+  } = useDragAndDrop({
     dataObj: ticketData,
     setDataObj: setTicketData,
     onDragEndSubmit: async (ticket, columnId) => {
@@ -78,5 +85,5 @@ export const useTicketDataLogic = (tickets: TicketType[]) => {
     });
   }, [tickets]);
 
-  return { ticketData: newTicketData, sensors, handleDragOver, handleDragEnd };
+  return { ticketData: newTicketData, activeTicket, sensors, handleDragOver, handleDragEnd, handleDragStart };
 };
