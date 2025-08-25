@@ -25,7 +25,7 @@ export const BoardColumn = ({
       items={tickets.length > 0 ? tickets : [{ id: `placeholder-id-for-${columnId}` }]}
       strategy={verticalListSortingStrategy}
     >
-      <div className={cn("flex flex-col space-y-4 min-w-[328px]", className)}>
+      <div className={cn("flex flex-col space-y-4 min-w-[348px]", className)}>
         <h3 className="text-[#667085] text-sm font-bold">{columnName}</h3>
         <div ref={setNodeRef} className="flex flex-col space-y-4">
           {tickets.map((ticket) => (

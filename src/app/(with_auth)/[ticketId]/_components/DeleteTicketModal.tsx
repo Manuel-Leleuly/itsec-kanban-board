@@ -3,8 +3,14 @@
 import { TicketType } from "@/api/tickets/models/tickets";
 import { useDeleteTicketLogic } from "../_logic/useDeleteTicketLogic";
 import { ObjectUtils } from "@/utils/objectUtils";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+  KanbanModalBody,
+  KanbanModalContent,
+  KanbanModalFooter,
+  KanbanModalHeader,
+} from "@/components/KanbanModal/KanbanModal";
 
 export const DeleteTicketModal = ({
   isOpen,
@@ -27,18 +33,20 @@ export const DeleteTicketModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onCancel}>
-      <DialogContent
+      <KanbanModalContent
         onInteractOutside={(e) => {
           if (isLoading) e.preventDefault();
         }}
       >
-        <DialogHeader>
+        <KanbanModalHeader>
           <DialogTitle>Delete Task</DialogTitle>
-        </DialogHeader>
+        </KanbanModalHeader>
 
-        <p className="text-gray-500 font-normal">Are you sure you want to delete this task?</p>
+        <KanbanModalBody>
+          <p className="text-gray-500 font-normal">Are you sure you want to delete this task?</p>
+        </KanbanModalBody>
 
-        <DialogFooter>
+        <KanbanModalFooter>
           <DialogClose asChild>
             <Button variant={"outline"} disabled={isLoading}>
               Cancel
@@ -47,8 +55,8 @@ export const DeleteTicketModal = ({
           <Button onClick={onDeleteClick} disabled={isLoading} className="bg-blue-500 hover:bg-blue-600">
             Yes, delete
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </KanbanModalFooter>
+      </KanbanModalContent>
     </Dialog>
   );
 };

@@ -27,7 +27,7 @@ export const KanbanSidebar = () => {
               {user.name[0].toUpperCase()}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent side="right">
             <p>{user.name}</p>
           </TooltipContent>
         </Tooltip>

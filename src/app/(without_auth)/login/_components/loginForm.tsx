@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { useLoginFormLogic } from "../_logic/useLoginFormLogic";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/providers/authProvider";
 import Link from "next/link";
+import { AuthInput } from "@/components/Input/AuthInput";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 export const LoginForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -24,7 +23,7 @@ export const LoginForm = () => {
 
   return (
     <form
-      className="space-y-4"
+      className="space-y-8"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -34,8 +33,7 @@ export const LoginForm = () => {
       <loginForm.Field name="email">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
+            <AuthInput
               type="email"
               id={field.name}
               name={field.name}
@@ -44,7 +42,7 @@ export const LoginForm = () => {
                 e.preventDefault();
                 field.handleChange(e.target.value);
               }}
-              placeholder="e.g., john@doe.com"
+              placeholder="Email"
               className="w-full"
               disabled={isLoading}
             />
@@ -68,9 +66,8 @@ export const LoginForm = () => {
       <loginForm.Field name="password">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
             <div className="relative">
-              <Input
+              <AuthInput
                 type={isPasswordVisible ? "text" : "password"}
                 id={field.name}
                 name={field.name}
@@ -79,20 +76,20 @@ export const LoginForm = () => {
                   e.preventDefault();
                   field.handleChange(e.target.value);
                 }}
-                placeholder="password"
+                placeholder="Password"
                 className="w-full"
                 disabled={isLoading}
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-1"
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <FaEye className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <FaEyeSlash className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>
@@ -124,7 +121,7 @@ export const LoginForm = () => {
         </div>
         <Button
           type="submit"
-          className="w-full hover:cursor-pointer disabled:cursor-not-allowed"
+          className="w-full text-xl py-2 h-fit bg-blue-500 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-not-allowed"
           disabled={!loginForm.state.isFieldsValid || isLoading}
         >
           {isLoading ? "Logging in..." : "Login"}

@@ -3,11 +3,10 @@
 import { useAuthContext } from "@/providers/authProvider";
 import { useState } from "react";
 import { useRegisterFormLogic } from "../_logic/useRegisterFormLogic";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { AuthInput } from "@/components/Input/AuthInput";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 export const RegisterForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -28,8 +27,7 @@ export const RegisterForm = () => {
       <registerForm.Field name="first_name">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>First Name</Label>
-            <Input
+            <AuthInput
               type="text"
               id={field.name}
               name={field.name}
@@ -38,7 +36,7 @@ export const RegisterForm = () => {
                 e.preventDefault();
                 field.handleChange(e.target.value);
               }}
-              placeholder="e.g., John"
+              placeholder="First Name"
               className="w-full"
               disabled={isLoading}
             />
@@ -62,8 +60,7 @@ export const RegisterForm = () => {
       <registerForm.Field name="last_name">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>Last Name</Label>
-            <Input
+            <AuthInput
               type="text"
               id={field.name}
               name={field.name}
@@ -72,7 +69,7 @@ export const RegisterForm = () => {
                 e.preventDefault();
                 field.handleChange(e.target.value);
               }}
-              placeholder="e.g., Doe"
+              placeholder="Last Name"
               className="w-full"
               disabled={isLoading}
             />
@@ -96,9 +93,8 @@ export const RegisterForm = () => {
       <registerForm.Field name="email">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>Email</Label>
-            <Input
-              type="email"
+            <AuthInput
+              type="text"
               id={field.name}
               name={field.name}
               value={field.state.value}
@@ -106,7 +102,7 @@ export const RegisterForm = () => {
                 e.preventDefault();
                 field.handleChange(e.target.value);
               }}
-              placeholder="e.g., johndoe@example.com"
+              placeholder="Email"
               className="w-full"
               disabled={isLoading}
             />
@@ -130,9 +126,8 @@ export const RegisterForm = () => {
       <registerForm.Field name="password">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>Password</Label>
             <div className="relative">
-              <Input
+              <AuthInput
                 type={isPasswordVisible ? "text" : "password"}
                 id={field.name}
                 name={field.name}
@@ -141,20 +136,20 @@ export const RegisterForm = () => {
                   e.preventDefault();
                   field.handleChange(e.target.value);
                 }}
-                placeholder="password"
+                placeholder="Password"
                 className="w-full"
                 disabled={isLoading}
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-1"
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <FaEye className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <FaEyeSlash className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>
@@ -178,9 +173,8 @@ export const RegisterForm = () => {
       <registerForm.Field name="retype_password">
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>Retype Password</Label>
             <div className="relative">
-              <Input
+              <AuthInput
                 type={isPasswordVisible ? "text" : "password"}
                 id={field.name}
                 name={field.name}
@@ -189,20 +183,20 @@ export const RegisterForm = () => {
                   e.preventDefault();
                   field.handleChange(e.target.value);
                 }}
-                placeholder="password"
+                placeholder="Re-type Password"
                 className="w-full"
                 disabled={isLoading}
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute inset-y-0 right-0 flex items-center pr-1"
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  <FaEye className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
+                  <FaEyeSlash className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>
@@ -234,7 +228,7 @@ export const RegisterForm = () => {
         </div>
         <Button
           type="submit"
-          className="w-full hover:cursor-pointer disabled:cursor-not-allowed"
+          className="w-full text-xl py-2 h-fit bg-blue-500 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-not-allowed"
           disabled={!registerForm.state.isFieldsValid || isLoading}
         >
           {isLoading ? "Please wait..." : "Register"}

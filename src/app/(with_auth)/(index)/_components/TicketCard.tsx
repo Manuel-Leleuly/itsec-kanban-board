@@ -17,14 +17,29 @@ export const TicketCard = ({ ticket }: { ticket: TicketType }) => {
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
     >
       <Card className="w-[348px] rounded-sm">
         <CardHeader>
-          <CardTitle className="w-fit max-w-full overflow-hidden">
-            <Link href={`/${ticket.id}`} className="hover:underline">
-              <p className="whitespace-nowrap overflow-hidden text-ellipsis">{ticket.title}</p>
-            </Link>
+          <CardTitle>
+            <div className="w-full flex justify-between items-center">
+              <div className="w-fit max-w-full overflow-hidden">
+                <Link
+                  href={`/${ticket.id}`}
+                  className="hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis">{ticket.title}</p>
+                </Link>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-400">#{ticket.id}</p>
+              </div>
+            </div>
           </CardTitle>
           <CardDescription className="line-clamp-2 text-wrap">{ticket.description}</CardDescription>
         </CardHeader>

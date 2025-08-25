@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  CreateUpdateTicketReqBodySchema,
-  CreateUpdateTicketReqBodyType,
-  TicketType,
-} from "@/api/tickets/models/tickets";
+import { CreateUpdateTicketFormSchema, CreateUpdateTicketFormType, TicketType } from "@/api/tickets/models/tickets";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { addTicket, updateTicket } from "./action";
@@ -17,15 +13,24 @@ export const useAddUpdateTicketLogic = ({
   ticketData?: TicketType;
   onSuccess: () => void;
 }) => {
-  const today = new Date().toISOString();
-
   const ticketMutation = useMutation({
     mutationKey: ["addUpdateTicket"],
-    mutationFn: async (value: CreateUpdateTicketReqBodyType) => {
+    mutationFn: async (value: CreateUpdateTicketFormType) => {
+      const today = new Date().toISOString();
       if (ticketData) {
-        await updateTicket(ticketData.id, value);
+        await updateTicket(ticketData.id, {
+          ...value,
+          createdAt: ticketData.createdAt,
+          updatedAt: today,
+          deletedAt: ticketData.deletedAt,
+        });
       } else {
-        await addTicket(value);
+        await addTicket({
+          ...value,
+          createdAt: today,
+          updatedAt: today,
+          deletedAt: "",
+        });
       }
     },
     onSuccess: () => {
@@ -43,12 +48,9 @@ export const useAddUpdateTicketLogic = ({
       description: ticketData?.description ?? "",
       assignees: ticketData?.assignees ?? [],
       status: ticketData?.status ?? "todo",
-      createdAt: ticketData?.createdAt ?? today,
-      updatedAt: today,
-      deletedAt: ticketData?.deletedAt ?? "",
     },
     validators: {
-      onSubmit: CreateUpdateTicketReqBodySchema,
+      onSubmit: CreateUpdateTicketFormSchema,
     },
     onSubmit: ({ value }) => {
       ticketMutation.mutate(value);
