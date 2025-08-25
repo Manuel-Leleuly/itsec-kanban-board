@@ -15,7 +15,7 @@ export const DashboardContent = ({ tickets }: { tickets: TicketType[] }) => {
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-8 flex-nowrap overflow-auto">
         <BoardColumn columnName="TO DO" columnId="todo" tickets={ticketData.todo} />
         <BoardColumn columnName="DOING" columnId="doing" tickets={ticketData.doing} />
         <BoardColumn columnName="DONE" columnId="done" tickets={ticketData.done} />

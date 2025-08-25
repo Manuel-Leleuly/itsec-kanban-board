@@ -25,8 +25,8 @@ export const TicketContent = ({ ticket }: { ticket: TicketType }) => {
         <CardTitle>{ticket.title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-5 text-gray-500">
-        <div className="w-full grid grid-cols-3">
-          <p className="col-span-2">{ticket.description}</p>
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <p className="lg:col-span-2">{ticket.description}</p>
           <div className="text-sm">
             <p className="font-semibold">Info</p>
             <p>Created at: {renderDate(new Date(ticket.createdAt))}</p>

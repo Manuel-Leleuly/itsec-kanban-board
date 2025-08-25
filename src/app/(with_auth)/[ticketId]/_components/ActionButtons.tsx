@@ -18,7 +18,7 @@ export const ActionButtons = ({ ticket }: { ticket: TicketType }) => {
 
   return (
     <>
-      <div className="w-full flex justify-end items-center space-x-2.5">
+      <div className="w-full flex justify-center md:justify-end items-center space-x-2.5">
         <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setSelectedModal(Modals.EDIT)}>
           Edit task
         </Button>

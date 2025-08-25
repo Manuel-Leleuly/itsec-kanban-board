@@ -17,9 +17,9 @@ export const KanbanSidebar = () => {
   const { onLogout } = useLogoutLogic();
 
   return (
-    <div className="w-fit h-screen p-4 flex flex-col justify-between items-center bg-white border-r border-r-[#1D29391A]">
+    <div className="w-fit h-screen p-1 sm:p-4 flex flex-col justify-between items-center bg-white border-r border-r-[#1D29391A]">
       {/* content */}
-      <div className="flex flex-col space-y-3.5">
+      <div className="flex flex-col gap-3.5">
         {/* Username */}
         <Tooltip>
           <TooltipTrigger asChild>

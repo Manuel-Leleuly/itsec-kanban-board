@@ -24,8 +24,13 @@ export const DashboardTitle = () => {
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Hello {getFirstName(user.name)}, Here's your task</h1>
-        <Button className="bg-[#4186F4] hover:bg-[#2b63bc]" onClick={() => setSelectedModal(Modals.ADD)}>
+        <h1 className="text-md md:text-xl lg:text-2xl font-semibold">
+          Hello {getFirstName(user.name)}, Here's your task
+        </h1>
+        <Button
+          className="text-blue-500 hover:text-blue-600 bg-transparent shadow-none sm:bg-blue-500 sm:hover:bg-blue-600 sm:text-white sm:hover:text-white"
+          onClick={() => setSelectedModal(Modals.ADD)}
+        >
           Add a task
         </Button>
       </div>
