@@ -23,7 +23,7 @@ export const DeleteTicketModal = ({
   onCancel: () => void;
   ticketData: TicketType;
 }) => {
-  const { onDeleteSubmit, isLoading, error } = useDeleteTicketLogic(onSuccess);
+  const { onDeleteSubmit, isLoading } = useDeleteTicketLogic(onSuccess);
 
   const onDeleteClick = () => {
     const newTicketData = ObjectUtils.cloneObject(ticketData);

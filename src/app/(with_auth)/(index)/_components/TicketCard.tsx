@@ -25,14 +25,7 @@ export const TicketCard = ({ ticket, className }: { ticket: TicketType; classNam
           <CardTitle>
             <div className="w-full flex justify-between items-center">
               <div className="w-fit max-w-full overflow-hidden">
-                <Link
-                  href={`/${ticket.id}`}
-                  className="hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
+                <Link href={`/${ticket.id}`} className="hover:underline">
                   <p className="whitespace-nowrap overflow-hidden text-ellipsis">{ticket.title}</p>
                 </Link>
               </div>

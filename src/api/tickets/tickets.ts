@@ -18,7 +18,7 @@ export class TicketApi {
   };
 
   static createTicket = async (network: AxiosInstance, reqBody: CreateUpdateTicketReqBodyType) => {
-    return await FetchUtil.validateResponse<TicketType>(() => network.post("/tickets"), TicketSchema);
+    return await FetchUtil.validateResponse<TicketType>(() => network.post("/tickets", reqBody), TicketSchema);
   };
 
   static updateTicketById = async (

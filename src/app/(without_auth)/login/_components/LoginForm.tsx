@@ -112,7 +112,7 @@ export const LoginForm = () => {
 
       <div className="flex flex-col space-y-2 items-center">
         <div className="flex items-center space-x-2 text-sm">
-          <p>Don't have an account?</p>
+          <p>Don&#39;t have an account?</p>
           <Link href={"/register"}>
             <Button type="button" variant={"link"} className="text-blue-500 font-normal px-0">
               Sign up

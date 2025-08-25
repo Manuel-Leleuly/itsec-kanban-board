@@ -1,7 +1,7 @@
 import { ObjectUtils } from "@/utils/objectUtils";
-import { KeyboardSensor, MouseSensor, useSensor, useSensors, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
+import { useSensor, useSensors, DragEndEvent, DragOverEvent, PointerSensor } from "@dnd-kit/core";
 import { Coordinates, DragStartEvent } from "@dnd-kit/core/dist/types";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, startTransition, useOptimistic, useState } from "react";
 
@@ -19,9 +19,10 @@ export const useDragAndDrop = <T extends { id: string }>({
   onDragEndError?: (error: Error, variables: { data: T; newColumnId: string }, context: unknown) => void;
 }) => {
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
     })
   );
 

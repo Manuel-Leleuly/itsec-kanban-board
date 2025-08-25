@@ -25,7 +25,7 @@ export const DashboardTitle = () => {
     <>
       <div className="w-full flex justify-between items-center">
         <h1 className="text-md md:text-xl lg:text-2xl font-semibold">
-          Hello {getFirstName(user.name)}, Here's your task
+          Hello {getFirstName(user.name)}, Here&#39;s your task
         </h1>
         <Button
           className="text-blue-500 hover:text-blue-600 bg-transparent shadow-none sm:bg-blue-500 sm:hover:bg-blue-600 sm:text-white sm:hover:text-white"

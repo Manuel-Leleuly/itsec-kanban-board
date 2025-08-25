@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { PageRouteProps } from "@/models/models";
+import { DynamicMetadataFunction, PageRouteProps } from "@/models/models";
 import { NetworkUtils } from "@/utils/networkUtils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +16,16 @@ import { TicketContent } from "./_components/TicketContent";
 import { ActionButtons } from "./_components/ActionButtons";
 
 type Props = PageRouteProps<{ ticketId: string }>;
+
+export const generateMetadata: DynamicMetadataFunction<{ ticketId: string }> = async ({ params }) => {
+  const { ticketId } = await params;
+  const network = NetworkUtils.create();
+  const ticket = await TicketApi.getTicketById(network, parseInt(ticketId));
+
+  return {
+    title: `ITSEC Kanban Board | ${ticket.id}`,
+  };
+};
 
 export default async function TicketDetailPage({ params }: Props) {
   const { ticketId } = await params;

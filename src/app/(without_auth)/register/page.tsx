@@ -1,5 +1,10 @@
 import Image from "next/image";
+import { Metadata } from "next";
 import { RegisterForm } from "./_components/RegisterForm";
+
+export const metadata: Metadata = {
+  title: "ITSEC Kanban Board | Register",
+};
 
 export default function RegisterPage() {
   return (

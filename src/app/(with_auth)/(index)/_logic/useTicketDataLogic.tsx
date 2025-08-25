@@ -43,7 +43,7 @@ export const useTicketDataLogic = (tickets: TicketType[]) => {
 
       await updateTicket(updatedTicket.id, updatedTicket);
     },
-    onDragEndSuccess: (_, variables, __) => {
+    onDragEndSuccess: (_, variables) => {
       if (variables.data.status === variables.newColumnId) return;
       ToastLib.success(
         <p>

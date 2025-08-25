@@ -1,5 +1,10 @@
-import { LoginForm } from "./_components/LoginForm";
+import { Metadata } from "next";
 import Image from "next/image";
+import { LoginForm } from "./_components/LoginForm";
+
+export const metadata: Metadata = {
+  title: "ITSEC Kanban Board | Login",
+};
 
 export default async function LoginPage() {
   return (

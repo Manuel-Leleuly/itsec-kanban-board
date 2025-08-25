@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ITSEC - Kanban Board
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This is a simple kanban board made with ReactJS (NextJS) for the purpose of finishing the technical test from ITSEC
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How to use
+
+### Local
+
+If you want to run this project locally, you can do so by first installing all the dependencies required:
+
+```
+bun --bun install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then, start the development environment:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+bun --bun run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> [!WARNING] 
+> This repo uses [MockAPI](https://mockapi.io/) for storing and manipulating data. Please take a look at [TicketSchema](src/api/tickets/models/tickets.ts/) and [UserSchema](src/api/users/models/users.ts) for creating the data tables
 
-## Learn More
+## Development Requirements
 
-To learn more about Next.js, take a look at the following resources:
+- IDE (VSCode, WebStorm, Cursor, Atom, Notepad++, VIM, etc.)
+- BunJS (`npm install -g bun`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Name             | Optional | Description                          |
+| ---------------- | -------- | ------------------------------------ |
+| MOCKAPI_BASE_URL | no       | Base url of MockAPI for storing data |
 
-## Deploy on Vercel
+## Current limitations / errors
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. MockAPI used in this repo is a free version, meaning that I can only do CRUD using `id`. During login and/or register process, the page will have to fetch all stored users from server into client so that I can check the `email` and/or `password`. This results in the page load slower than expected.
+2. There are some hydration issues in some of the component
+3. There is an issue with [Maximum update depth exceeded](https://github.com/clauderic/dnd-kit/issues/496). This happens when you drag an item to left and right quickly and excessively. I'm still trying to figure out why that happened. It doesn't happen when you drag it slowly
