@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useLoginFormLogic } from "../_logic/useLoginFormLogic";
-import { Button } from "@/components/ui/button";
-import { useAuthContext } from "@/providers/authProvider";
-import Link from "next/link";
 import { AuthInput } from "@/components/Input/AuthInput";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { useLoginFormLogic } from "../_logic/useLoginFormLogic";
 
 export const LoginForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { users } = useAuthContext();
-  const { loginForm, isLoading, error } = useLoginFormLogic(users);
+  const { loginForm, isLoading, error } = useLoginFormLogic();
 
   const getErrorMessage = () => {
     if (error) {

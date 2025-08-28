@@ -1,24 +1,19 @@
 "use client";
 
-import { LoginReqBodySchema, LoginReqBodyType, UserResponseType } from "@/api/users/models/users";
+import { LoginReqBodySchema, LoginReqBodyType } from "@/api/users/models/users";
+import { ToastLib } from "@/lib/toastLib";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../actions";
 import { useRouter } from "next/navigation";
-import { ToastLib } from "@/lib/toastLib";
+import { login } from "../actions";
 
-export const useLoginFormLogic = (users: UserResponseType) => {
+export const useLoginFormLogic = () => {
   const router = useRouter();
 
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: async (reqBody: LoginReqBodyType) => {
-      const selectedUser = users.find((user) => user.email === reqBody.email);
-      if (!selectedUser) {
-        throw new Error("wrong email and/or password");
-      }
-
-      const errorData = await login(reqBody, selectedUser);
+      const errorData = await login(reqBody);
       if (errorData) {
         throw new Error(JSON.stringify(errorData));
       }

@@ -55,3 +55,10 @@ export const CreateUserFormSchema = z
   });
 
 export type CreateUserFormType = z.infer<typeof CreateUserFormSchema>;
+
+export const GetAllUsersParamsSchema = z.object({
+  name: z.string().nullish(),
+  email: z.string().nullish(),
+});
+
+export type GetAllUsersParamsType = z.infer<typeof GetAllUsersParamsSchema>;

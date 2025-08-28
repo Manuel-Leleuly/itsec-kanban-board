@@ -3,6 +3,7 @@ import { AxiosInstance } from "axios";
 import {
   CreateUserReqBodySchema,
   CreateUserReqBodyType,
+  GetAllUsersParamsType,
   UserResponseSchema,
   UserResponseType,
   UserSchema,
@@ -10,8 +11,11 @@ import {
 } from "./models/users";
 
 export class UserApi {
-  static getAllUsers = async (network: AxiosInstance) => {
-    return await FetchUtil.validateResponse<UserResponseType>(() => network.get("/users"), UserResponseSchema);
+  static getAllUsers = async (network: AxiosInstance, params?: GetAllUsersParamsType) => {
+    return await FetchUtil.validateResponse<UserResponseType>(
+      () => network.get("/users", { params }),
+      UserResponseSchema
+    );
   };
 
   static getUserById = async (network: AxiosInstance, userId: string) => {

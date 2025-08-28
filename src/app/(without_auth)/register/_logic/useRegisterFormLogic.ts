@@ -1,36 +1,27 @@
 "use client";
 
-import { CreateUserFormSchema, CreateUserFormType, UserResponseType } from "@/api/users/models/users";
+import { CreateUserFormSchema, CreateUserFormType } from "@/api/users/models/users";
+import { ToastLib } from "@/lib/toastLib";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { register } from "../action";
-import { ToastLib } from "@/lib/toastLib";
-import { useForm } from "@tanstack/react-form";
 
-export const useRegisterFormLogic = (users: UserResponseType) => {
+export const useRegisterFormLogic = () => {
   const router = useRouter();
 
   const registerMutation = useMutation({
     mutationKey: ["register"],
     mutationFn: async (reqBody: CreateUserFormType) => {
-      const selectedUser = users.find((user) => {
-        const userEmail = user.email;
-        const userFullname = user.name;
-        const reqEmail = reqBody.email;
-        const reqFullname = `${reqBody.first_name} ${reqBody.last_name}`;
-
-        return userEmail === reqEmail && userFullname === reqFullname;
-      });
-      if (selectedUser) {
-        throw new Error("User already exists");
-      }
-
-      await register({
+      const errorData = await register({
         email: reqBody.email,
         password: reqBody.password,
         name: `${reqBody.first_name} ${reqBody.last_name}`,
         createdAt: new Date().toISOString(),
       });
+      if (errorData) {
+        throw new Error(JSON.stringify(errorData));
+      }
     },
     onSuccess: () => {
       ToastLib.success("Success creating new user. Redirect to login...");

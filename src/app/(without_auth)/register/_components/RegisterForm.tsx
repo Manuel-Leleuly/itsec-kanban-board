@@ -1,19 +1,23 @@
 "use client";
 
-import { useAuthContext } from "@/providers/authProvider";
-import { useState } from "react";
-import { useRegisterFormLogic } from "../_logic/useRegisterFormLogic";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { AuthInput } from "@/components/Input/AuthInput";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { useRegisterFormLogic } from "../_logic/useRegisterFormLogic";
 
 export const RegisterForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { users } = useAuthContext();
-  const { registerForm, isLoading, error } = useRegisterFormLogic(users);
+  const { registerForm, isLoading, error } = useRegisterFormLogic();
 
-  const registerErrorMessage = error?.message;
+  const getErrorMessage = () => {
+    if (error) {
+      const error_data = JSON.parse(error.message);
+      return error_data.error_message;
+    }
+    return "";
+  };
 
   return (
     <form
@@ -233,7 +237,7 @@ export const RegisterForm = () => {
         >
           {isLoading ? "Please wait..." : "Register"}
         </Button>
-        {registerErrorMessage && <em className="text-red-500 text-sm">{registerErrorMessage}</em>}
+        <em className="text-red-500 text-sm">{getErrorMessage()}</em>
       </div>
     </form>
   );
