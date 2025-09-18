@@ -1,5 +1,5 @@
-import { globalVar } from "@/constants/constants";
-import axios, { AxiosRequestConfig } from "axios";
+import { globalVar } from '@/constants/constants';
+import axios, { AxiosRequestConfig } from 'axios';
 
 export class NetworkUtils {
   static create = (config?: AxiosRequestConfig) => {

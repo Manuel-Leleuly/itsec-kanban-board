@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import z from "zod";
-import { AddEditTicketModal } from "../../_components/AddEditTicketModal";
-import { sleepAsync } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { TicketType } from "@/api/tickets/models/tickets";
-import { DeleteTicketModal } from "./DeleteTicketModal";
+import { TicketType } from '@/api/tickets/models/tickets';
+import { Button } from '@/components/ui/button';
+import { sleepAsync } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import z from 'zod';
+import { AddEditTicketModal } from '../../_components/AddEditTicketModal';
+import { DeleteTicketModal } from './DeleteTicketModal';
 
-const Modals = z.enum(["EDIT", "DELETE"]).enum;
+const Modals = z.enum(['EDIT', 'DELETE']).enum;
 type ModalType = keyof typeof Modals;
 
 export const ActionButtons = ({ ticket }: { ticket: TicketType }) => {
@@ -18,12 +18,19 @@ export const ActionButtons = ({ ticket }: { ticket: TicketType }) => {
 
   return (
     <>
-      <div className="w-full flex justify-center md:justify-end items-center space-x-2.5">
-        <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setSelectedModal(Modals.EDIT)}>
+      <div className='w-full flex justify-center md:justify-end items-center space-x-2.5'>
+        <Button
+          className='bg-blue-500 hover:bg-blue-600'
+          onClick={() => setSelectedModal(Modals.EDIT)}
+        >
           Edit task
         </Button>
         <p>or</p>
-        <Button className="text-red-500 p-0" variant="link" onClick={() => setSelectedModal(Modals.DELETE)}>
+        <Button
+          className='text-red-500 p-0'
+          variant='link'
+          onClick={() => setSelectedModal(Modals.DELETE)}
+        >
           Delete
         </Button>
       </div>
@@ -47,7 +54,7 @@ export const ActionButtons = ({ ticket }: { ticket: TicketType }) => {
           setSelectedModal(null);
 
           await sleepAsync();
-          router.push("/");
+          router.push('/');
         }}
         ticketData={ticket}
       />

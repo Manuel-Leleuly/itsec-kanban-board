@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import { CreateUserFormSchema, CreateUserFormType } from "@/api/users/models/users";
-import { ToastLib } from "@/lib/toastLib";
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { register } from "../action";
+import { register } from '@/actions/serverActions';
+import {
+  CreateUserFormSchema,
+  CreateUserFormType,
+} from '@/api/users/models/users';
+import { ToastLib } from '@/lib/toastLib';
+import { useForm } from '@tanstack/react-form';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 export const useRegisterFormLogic = () => {
   const router = useRouter();
 
   const registerMutation = useMutation({
-    mutationKey: ["register"],
+    mutationKey: ['register'],
     mutationFn: async (reqBody: CreateUserFormType) => {
       const errorData = await register({
         email: reqBody.email,
@@ -24,21 +27,21 @@ export const useRegisterFormLogic = () => {
       }
     },
     onSuccess: () => {
-      ToastLib.success("Success creating new user. Redirect to login...");
-      router.push("/login");
+      ToastLib.success('Success creating new user. Redirect to login...');
+      router.push('/login');
     },
     onError: () => {
-      ToastLib.error("Failed to create user. Please try again");
+      ToastLib.error('Failed to create user. Please try again');
     },
   });
 
   const registerForm = useForm({
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      retype_password: "",
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      retype_password: '',
     },
     validators: {
       onSubmit: CreateUserFormSchema,

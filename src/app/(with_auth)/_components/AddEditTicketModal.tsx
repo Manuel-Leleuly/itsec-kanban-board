@@ -1,21 +1,31 @@
-"use client";
+'use client';
 
-import { Dialog, DialogClose, DialogTitle } from "@/components/ui/dialog";
-import { useAddUpdateTicketLogic } from "../_logic/useAddUpdateTicketLogic";
-import { CreateUpdateTicketReqBodySchema, TicketType } from "@/api/tickets/models/tickets";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import {
+  CreateUpdateTicketReqBodySchema,
+  TicketType,
+} from '@/api/tickets/models/tickets';
 import {
   KanbanModalBody,
   KanbanModalContent,
   KanbanModalFooter,
   KanbanModalHeader,
-} from "@/components/KanbanModal/KanbanModal";
+} from '@/components/KanbanModal/KanbanModal';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogClose, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useAddUpdateTicketLogic } from '@/logic/useAddUpdateTicketLogic';
+import { useEffect } from 'react';
 
 const TicketStatusEnum = CreateUpdateTicketReqBodySchema.shape.status.enum;
 type TicketStatusType = keyof typeof TicketStatusEnum;
@@ -31,7 +41,10 @@ export const AddEditTicketModal = ({
   onCancel: () => void;
   ticketData?: TicketType;
 }) => {
-  const { ticketForm, isLoading } = useAddUpdateTicketLogic({ ticketData, onSuccess });
+  const { ticketForm, isLoading } = useAddUpdateTicketLogic({
+    ticketData,
+    onSuccess,
+  });
 
   useEffect(() => {
     if (isOpen) ticketForm.reset();
@@ -45,7 +58,7 @@ export const AddEditTicketModal = ({
         }}
       >
         <KanbanModalHeader>
-          <DialogTitle>{ticketData ? "Edit" : "Add"} a Task</DialogTitle>
+          <DialogTitle>{ticketData ? 'Edit' : 'Add'} a Task</DialogTitle>
         </KanbanModalHeader>
 
         <form
@@ -55,15 +68,15 @@ export const AddEditTicketModal = ({
             ticketForm.handleSubmit();
           }}
         >
-          <KanbanModalBody className="space-y-4">
-            <ticketForm.Field name="title">
+          <KanbanModalBody className='space-y-4'>
+            <ticketForm.Field name='title'>
               {(field) => (
-                <div className="space-y-2">
-                  <Label htmlFor="title" className="text-gray-500">
+                <div className='space-y-2'>
+                  <Label htmlFor='title' className='text-gray-500'>
                     Task Name*
                   </Label>
                   <Input
-                    type="text"
+                    type='text'
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
@@ -71,23 +84,25 @@ export const AddEditTicketModal = ({
                       e.preventDefault();
                       field.handleChange(e.target.value);
                     }}
-                    placeholder="Task Name here..."
-                    className="w-full"
+                    placeholder='Task Name here...'
+                    className='w-full'
                     disabled={isLoading}
                   />
                   {!!field.state.meta.errors.length && (
-                    <em className="text-red-500 text-sm">
-                      {field.state.meta.errors.map((error) => error?.message).join(", ")}
+                    <em className='text-red-500 text-sm'>
+                      {field.state.meta.errors
+                        .map((error) => error?.message)
+                        .join(', ')}
                     </em>
                   )}
                 </div>
               )}
             </ticketForm.Field>
 
-            <ticketForm.Field name="description">
+            <ticketForm.Field name='description'>
               {(field) => (
-                <div className="space-y-2">
-                  <Label htmlFor="description" className="text-gray-500">
+                <div className='space-y-2'>
+                  <Label htmlFor='description' className='text-gray-500'>
                     Description
                   </Label>
                   <Textarea
@@ -98,80 +113,95 @@ export const AddEditTicketModal = ({
                       e.preventDefault();
                       field.handleChange(e.target.value);
                     }}
-                    placeholder="Description here..."
-                    className="w-full break-all max-h-52"
+                    placeholder='Description here...'
+                    className='w-full break-all max-h-52'
                     disabled={isLoading}
-                    wrap="hard"
+                    wrap='hard'
                   />
                 </div>
               )}
             </ticketForm.Field>
 
-            <ticketForm.Field name="assignees">
+            <ticketForm.Field name='assignees'>
               {(field) => (
-                <div className="flex flex-col space-y-4">
-                  <div className="flex items-center space-x-2">
+                <div className='flex flex-col space-y-4'>
+                  <div className='flex items-center space-x-2'>
                     <Checkbox
-                      id="design"
-                      checked={field.state.value.includes("design")}
+                      id='design'
+                      checked={field.state.value.includes('design')}
                       onCheckedChange={() => {
                         let assignees = [...field.state.value];
-                        const hasValue = assignees.includes("design");
+                        const hasValue = assignees.includes('design');
                         if (hasValue) {
-                          assignees = assignees.filter((value) => value !== "design");
+                          assignees = assignees.filter(
+                            (value) => value !== 'design',
+                          );
                         } else {
-                          assignees.push("design");
+                          assignees.push('design');
                         }
                         field.handleChange(assignees);
                       }}
                       disabled={isLoading}
-                      className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                      className='data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600'
                     />
-                    <Label htmlFor="design" className="text-gray-500 font-normal">
+                    <Label
+                      htmlFor='design'
+                      className='text-gray-500 font-normal'
+                    >
                       Design
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className='flex items-center space-x-2'>
                     <Checkbox
-                      id="frontend"
-                      checked={field.state.value.includes("frontend")}
+                      id='frontend'
+                      checked={field.state.value.includes('frontend')}
                       onCheckedChange={() => {
                         let assignees = [...field.state.value];
-                        const hasValue = assignees.includes("frontend");
+                        const hasValue = assignees.includes('frontend');
                         if (hasValue) {
-                          assignees = assignees.filter((value) => value !== "frontend");
+                          assignees = assignees.filter(
+                            (value) => value !== 'frontend',
+                          );
                         } else {
-                          assignees.push("frontend");
+                          assignees.push('frontend');
                         }
                         field.handleChange(assignees);
                       }}
                       disabled={isLoading}
-                      className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                      className='data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600'
                     />
-                    <Label htmlFor="frontend" className="text-gray-500 font-normal">
+                    <Label
+                      htmlFor='frontend'
+                      className='text-gray-500 font-normal'
+                    >
                       Frontend
                     </Label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className='flex items-center space-x-2'>
                     <Checkbox
-                      id="backend"
-                      checked={field.state.value.includes("backend")}
+                      id='backend'
+                      checked={field.state.value.includes('backend')}
                       onCheckedChange={() => {
                         let assignees = [...field.state.value];
-                        const hasValue = assignees.includes("backend");
+                        const hasValue = assignees.includes('backend');
                         if (hasValue) {
-                          assignees = assignees.filter((value) => value !== "backend");
+                          assignees = assignees.filter(
+                            (value) => value !== 'backend',
+                          );
                         } else {
-                          assignees.push("backend");
+                          assignees.push('backend');
                         }
                         field.handleChange(assignees);
                       }}
                       disabled={isLoading}
-                      className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                      className='data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600'
                     />
-                    <Label htmlFor="backend" className="text-gray-500 font-normal">
+                    <Label
+                      htmlFor='backend'
+                      className='text-gray-500 font-normal'
+                    >
                       Backend
                     </Label>
                   </div>
@@ -179,27 +209,38 @@ export const AddEditTicketModal = ({
               )}
             </ticketForm.Field>
 
-            <ticketForm.Field name="status">
+            <ticketForm.Field name='status'>
               {(field) => (
-                <div className="flex flex-col gap-2">
-                  <Label className="text-gray-500">Status</Label>
+                <div className='flex flex-col gap-2'>
+                  <Label className='text-gray-500'>Status</Label>
                   <Select
                     value={field.state.value as TicketStatusType}
-                    onValueChange={(value) => field.handleChange(value as TicketStatusType)}
+                    onValueChange={(value) =>
+                      field.handleChange(value as TicketStatusType)
+                    }
                     disabled={isLoading}
                   >
-                    <SelectTrigger className="w-full text-gray-500">
+                    <SelectTrigger className='w-full text-gray-500'>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value={TicketStatusEnum.todo} className="text-gray-500">
+                        <SelectItem
+                          value={TicketStatusEnum.todo}
+                          className='text-gray-500'
+                        >
                           TO DO
                         </SelectItem>
-                        <SelectItem value={TicketStatusEnum.doing} className="text-gray-500">
+                        <SelectItem
+                          value={TicketStatusEnum.doing}
+                          className='text-gray-500'
+                        >
                           DOING
                         </SelectItem>
-                        <SelectItem value={TicketStatusEnum.done} className="text-gray-500">
+                        <SelectItem
+                          value={TicketStatusEnum.done}
+                          className='text-gray-500'
+                        >
                           DONE
                         </SelectItem>
                       </SelectGroup>
@@ -212,12 +253,16 @@ export const AddEditTicketModal = ({
 
           <KanbanModalFooter>
             <DialogClose asChild>
-              <Button variant={"outline"} disabled={isLoading}>
+              <Button variant={'outline'} disabled={isLoading}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isLoading} className="bg-blue-500 hover:bg-blue-600">
-              {ticketData ? "Save" : "Submit"}
+            <Button
+              type='submit'
+              disabled={isLoading}
+              className='bg-blue-500 hover:bg-blue-600'
+            >
+              {ticketData ? 'Save' : 'Submit'}
             </Button>
           </KanbanModalFooter>
         </form>

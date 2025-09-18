@@ -1,10 +1,15 @@
-"use client";
+'use client';
 
-import { CreateUpdateTicketFormSchema, CreateUpdateTicketFormType, TicketType } from "@/api/tickets/models/tickets";
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { addTicket, updateTicket } from "./action";
-import { ToastLib } from "@/lib/toastLib";
+import { addTicket, updateTicket } from '@/actions/serverActions';
+import {
+  CreateUpdateTicketFormSchema,
+  CreateUpdateTicketFormType,
+  TicketType,
+} from '@/api/tickets/models/tickets';
+import { DELETED_AT_DEFAULT } from '@/constants/constants';
+import { ToastLib } from '@/lib/toastLib';
+import { useForm } from '@tanstack/react-form';
+import { useMutation } from '@tanstack/react-query';
 
 export const useAddUpdateTicketLogic = ({
   ticketData,
@@ -14,40 +19,46 @@ export const useAddUpdateTicketLogic = ({
   onSuccess: () => void;
 }) => {
   const ticketMutation = useMutation({
-    mutationKey: ["addUpdateTicket"],
+    mutationKey: ['addUpdateTicket'],
     mutationFn: async (value: CreateUpdateTicketFormType) => {
       const today = new Date().toISOString();
+      let error: Record<string, unknown> | null = null;
       if (ticketData) {
-        await updateTicket(ticketData.id, {
+        error = await updateTicket(ticketData.id, {
           ...value,
           createdAt: ticketData.createdAt,
           updatedAt: today,
           deletedAt: ticketData.deletedAt,
         });
       } else {
-        await addTicket({
+        error = await addTicket({
           ...value,
           createdAt: today,
           updatedAt: today,
-          deletedAt: "",
+          deletedAt: DELETED_AT_DEFAULT,
         });
       }
+      if (error) throw error;
     },
     onSuccess: () => {
-      ToastLib.success(`Task successfully ${ticketData ? "updated" : "created"}`);
+      ToastLib.success(
+        `Task successfully ${ticketData ? 'updated' : 'created'}`,
+      );
       onSuccess();
     },
     onError: () => {
-      ToastLib.error(`Failed to ${ticketData ? "update" : "create"} task. Please try again`);
+      ToastLib.error(
+        `Failed to ${ticketData ? 'update' : 'create'} task. Please try again`,
+      );
     },
   });
 
   const ticketForm = useForm({
     defaultValues: {
-      title: ticketData?.title ?? "",
-      description: ticketData?.description ?? "",
+      title: ticketData?.title ?? '',
+      description: ticketData?.description ?? '',
       assignees: ticketData?.assignees ?? [],
-      status: ticketData?.status ?? "todo",
+      status: ticketData?.status ?? 'todo',
     },
     validators: {
       onSubmit: CreateUpdateTicketFormSchema,

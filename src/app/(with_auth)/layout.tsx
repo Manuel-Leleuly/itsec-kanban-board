@@ -1,25 +1,26 @@
-import { UserSchema } from "@/api/users/models/users";
-import { Navbar } from "@/components/Navbar/Navbar";
-import { KanbanSidebar } from "@/components/Sidebar/Sidebar";
-import { PageLayout } from "@/models/models";
-import { ConfigContextProvider } from "@/providers/configProvider";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { UserSchema } from '@/api/users/models/users';
+import { Navbar } from '@/components/Navbar/Navbar';
+import { KanbanSidebar } from '@/components/Sidebar/Sidebar';
+import { COOKIE_KEYS } from '@/constants/constants';
+import { PageLayout } from '@/models/models';
+import { ConfigContextProvider } from '@/providers/configProvider';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export default async function WithAuthLayout({ children }: PageLayout) {
   const serverCookies = await cookies();
-  const userCookie = serverCookies.get("user");
-  if (!userCookie) redirect("/login");
+  const userCookie = serverCookies.get(COOKIE_KEYS.USER);
+  if (!userCookie) redirect('/login');
 
   const userCookieObj = JSON.parse(userCookie.value);
   const { data: user, success } = UserSchema.safeParse(userCookieObj);
-  if (!success) redirect("/login");
+  if (!success) redirect('/login');
 
   return (
     <ConfigContextProvider user={user}>
-      <div className="flex">
+      <div className='flex'>
         <KanbanSidebar />
-        <div className="w-full max-h-screen overflow-y-auto">
+        <div className='w-full max-h-screen overflow-y-auto'>
           <Navbar />
           {children}
         </div>

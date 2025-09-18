@@ -1,25 +1,39 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { z } from "zod";
+import { ServerActionErrorSchema } from '@/models/models';
+import { AxiosResponse, isAxiosError } from 'axios';
+import { z } from 'zod';
 
 export class FetchUtil {
-  static validateResponse = async <D>(networkCall: () => Promise<AxiosResponse<D>>, Codec: z.ZodType<D>) => {
+  static validateResponse = async <D>(
+    networkCall: () => Promise<AxiosResponse<D>>,
+    Codec: z.ZodType<D>,
+  ) => {
     try {
       const response = await networkCall();
-      const { success, data, error } = Codec.safeParse(response.data);
-
-      if (!success) throw error;
-
-      return data;
+      return Codec.parse(response.data);
     } catch (error) {
       throw error;
     }
   };
 
-  static getAxiosErrorFromServerAction = (error: AxiosError, serverActionLabel: string) => {
+  static getErrorFromServerAction = ({
+    error,
+    errorMessage,
+    serverActionLabel,
+  }: {
+    error: Error;
+    errorMessage: string;
+    serverActionLabel: string;
+  }) => {
     return {
-      message: `there is a server action error from ${serverActionLabel}`,
-      status_code: error.status,
-      response_data: error.response?.data,
+      action_message: `there is a server action error from ${serverActionLabel}`,
+      status_code: isAxiosError(error) ? error.status : null,
+      error_message: errorMessage,
+      response_data: isAxiosError(error) ? error.response?.data : null,
     };
+  };
+
+  static parseServerActionError = (error: Error) => {
+    const errJson = JSON.parse(error.message);
+    return ServerActionErrorSchema.parse(errJson);
   };
 }
