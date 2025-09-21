@@ -1,36 +1,48 @@
 import z from 'zod';
 
-export const UserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.email(),
-  password: z.string(),
-  createdAt: z.string(),
+export const TokenResponseSchema = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+  status: z.string().default('success'),
 });
 
-export type UserType = z.infer<typeof UserSchema>;
-
-export const UserResponseSchema = z.array(UserSchema);
-
-export type UserResponseType = z.infer<typeof UserResponseSchema>;
-
-export const CreateUserReqBodySchema = z.object({
-  name: z.string(),
-  email: z.email(),
-  password: z.string(),
-  createdAt: z.string(),
-});
-
-export type CreateUserReqBodyType = z.infer<typeof CreateUserReqBodySchema>;
+export type TokenResponse = z.infer<typeof TokenResponseSchema>;
 
 export const LoginReqBodySchema = z.object({
+  email: z.email(),
+  password: z.string(),
+});
+
+export type LoginReqBody = z.infer<typeof LoginReqBodySchema>;
+
+export const LoginFormSchema = z.object({
   email: z.email(),
   password: z.string().nonempty({ error: 'Password is required' }),
 });
 
-export type LoginReqBodyType = z.infer<typeof LoginReqBodySchema>;
+export type LoginForm = z.infer<typeof LoginFormSchema>;
 
-export const CreateUserFormSchema = z
+export const UserResponseSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export type UserResponse = z.infer<typeof UserResponseSchema>;
+
+export const UserCreateReqBodySchema = z.object({
+  email: z.string().nullish(),
+  password: z.string().nullish(),
+  first_name: z.string().nullish(),
+  last_name: z.string().nullish(),
+});
+
+export type UserCreateReqBody = z.infer<typeof UserCreateReqBodySchema>;
+
+export const UserCreateFormSchema = z
   .object({
     first_name: z.string().nonempty('First Name must not be empty'),
     last_name: z.string().nonempty('Last Name must not be empty'),
@@ -57,11 +69,4 @@ export const CreateUserFormSchema = z
     }
   });
 
-export type CreateUserFormType = z.infer<typeof CreateUserFormSchema>;
-
-export const GetAllUsersParamsSchema = z.object({
-  name: z.string().nullish(),
-  email: z.string().nullish(),
-});
-
-export type GetAllUsersParamsType = z.infer<typeof GetAllUsersParamsSchema>;
+export type UserCreateForm = z.infer<typeof UserCreateFormSchema>;

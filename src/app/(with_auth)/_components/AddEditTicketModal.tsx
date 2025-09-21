@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  CreateUpdateTicketReqBodySchema,
-  TicketType,
+  Ticket,
+  TicketCreateUpdateReqBodySchema,
 } from '@/api/tickets/models/tickets';
 import {
   KanbanModalBody,
@@ -27,7 +27,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAddUpdateTicketLogic } from '@/logic/useAddUpdateTicketLogic';
 import { useEffect } from 'react';
 
-const TicketStatusEnum = CreateUpdateTicketReqBodySchema.shape.status.enum;
+const TicketStatusEnum = TicketCreateUpdateReqBodySchema.shape.status.enum;
 type TicketStatusType = keyof typeof TicketStatusEnum;
 
 export const AddEditTicketModal = ({
@@ -39,7 +39,7 @@ export const AddEditTicketModal = ({
   isOpen: boolean;
   onSuccess: () => void;
   onCancel: () => void;
-  ticketData?: TicketType;
+  ticketData?: Ticket;
 }) => {
   const { ticketForm, isLoading } = useAddUpdateTicketLogic({
     ticketData,

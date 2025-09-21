@@ -1,6 +1,6 @@
 'use client';
 
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ export const TicketCard = ({
   ticket,
   className,
 }: {
-  ticket: TicketType;
+  ticket: Ticket;
   className?: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =

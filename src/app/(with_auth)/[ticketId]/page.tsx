@@ -1,4 +1,4 @@
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { TicketApi } from '@/api/tickets/tickets';
 import { PageContainer } from '@/components/Page/PageContainer';
 import {
@@ -22,8 +22,8 @@ export const generateMetadata: DynamicMetadataFunction<{
   ticketId: string;
 }> = async ({ params }): Promise<Metadata> => {
   const { ticketId } = await params;
-  const network = NetworkUtils.create();
-  const ticket = await TicketApi.getTicketById(network, parseInt(ticketId));
+  const network = NetworkUtils.withCredentials();
+  const ticket = await TicketApi.getTicketById(network, ticketId);
 
   return {
     title: `ITSEC Kanban Board | ${ticket.id}`,
@@ -33,11 +33,11 @@ export const generateMetadata: DynamicMetadataFunction<{
 export default async function TicketDetailPage({ params }: Props) {
   const { ticketId } = await params;
 
-  let ticket: TicketType | null = null;
+  let ticket: Ticket | null = null;
 
   try {
-    const network = NetworkUtils.create();
-    ticket = await TicketApi.getTicketById(network, parseInt(ticketId));
+    const network = NetworkUtils.withCredentials();
+    ticket = await TicketApi.getTicketById(network, ticketId);
   } catch (error) {
     console.error(error);
   }

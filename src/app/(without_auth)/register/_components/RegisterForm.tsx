@@ -1,6 +1,6 @@
 'use client';
 
-import { CreateUserFormSchema } from '@/api/users/models/users';
+import { UserCreateFormSchema } from '@/api/iam/models/iam';
 import { AuthInput } from '@/components/Input/AuthInput';
 import { FieldError } from '@/components/Input/FieldError';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ export const RegisterForm = () => {
     >
       <registerForm.Field
         name='first_name'
-        validators={{ onChange: CreateUserFormSchema.shape.first_name }}
+        validators={{ onChange: UserCreateFormSchema.shape.first_name }}
       >
         {(field) => (
           <div className='space-y-2'>
@@ -61,7 +61,7 @@ export const RegisterForm = () => {
 
       <registerForm.Field
         name='last_name'
-        validators={{ onChange: CreateUserFormSchema.shape.last_name }}
+        validators={{ onChange: UserCreateFormSchema.shape.last_name }}
       >
         {(field) => (
           <div className='space-y-2'>
@@ -89,7 +89,7 @@ export const RegisterForm = () => {
 
       <registerForm.Field
         name='email'
-        validators={{ onChange: CreateUserFormSchema.shape.email }}
+        validators={{ onChange: UserCreateFormSchema.shape.email }}
       >
         {(field) => (
           <div className='space-y-2'>
@@ -117,7 +117,7 @@ export const RegisterForm = () => {
 
       <registerForm.Field
         name='password'
-        validators={{ onChange: CreateUserFormSchema.shape.password }}
+        validators={{ onChange: UserCreateFormSchema.shape.password }}
       >
         {(field) => (
           <div className='space-y-2'>
@@ -159,7 +159,7 @@ export const RegisterForm = () => {
 
       <registerForm.Field
         name='retype_password'
-        validators={{ onChange: CreateUserFormSchema.shape.retype_password }}
+        validators={{ onChange: UserCreateFormSchema.shape.retype_password }}
       >
         {(field) => (
           <div className='space-y-2'>

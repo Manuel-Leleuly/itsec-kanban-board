@@ -1,12 +1,14 @@
 'use client';
 
-import { addTicket, updateTicket } from '@/actions/serverActions';
 import {
-  CreateUpdateTicketFormSchema,
-  CreateUpdateTicketFormType,
-  TicketType,
+  createTicket,
+  updateTicket,
+} from '@/api/tickets/actions/ticketServerAction';
+import {
+  Ticket,
+  TicketCreateUpdateForm,
+  TicketCreateUpdateFormSchema,
 } from '@/api/tickets/models/tickets';
-import { DELETED_AT_DEFAULT } from '@/constants/constants';
 import { ToastLib } from '@/lib/toastLib';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
@@ -15,28 +17,18 @@ export const useAddUpdateTicketLogic = ({
   ticketData,
   onSuccess,
 }: {
-  ticketData?: TicketType;
+  ticketData?: Ticket;
   onSuccess: () => void;
 }) => {
   const ticketMutation = useMutation({
     mutationKey: ['addUpdateTicket'],
-    mutationFn: async (value: CreateUpdateTicketFormType) => {
+    mutationFn: async (value: TicketCreateUpdateForm) => {
       const today = new Date().toISOString();
       let error: Record<string, unknown> | null = null;
       if (ticketData) {
-        error = await updateTicket(ticketData.id, {
-          ...value,
-          createdAt: ticketData.createdAt,
-          updatedAt: today,
-          deletedAt: ticketData.deletedAt,
-        });
+        error = await updateTicket(ticketData.id, value);
       } else {
-        error = await addTicket({
-          ...value,
-          createdAt: today,
-          updatedAt: today,
-          deletedAt: DELETED_AT_DEFAULT,
-        });
+        error = await createTicket(value);
       }
       if (error) throw error;
     },
@@ -61,7 +53,7 @@ export const useAddUpdateTicketLogic = ({
       status: ticketData?.status ?? 'todo',
     },
     validators: {
-      onSubmit: CreateUpdateTicketFormSchema,
+      onSubmit: TicketCreateUpdateFormSchema,
     },
     onSubmit: ({ value }) => {
       ticketMutation.mutate(value);

@@ -1,7 +1,7 @@
 'use client';
 
-import { login } from '@/actions/serverActions';
-import { LoginReqBodySchema, LoginReqBodyType } from '@/api/users/models/users';
+import { login } from '@/api/iam/actions/iamServerActions';
+import { LoginFormSchema, LoginReqBody } from '@/api/iam/models/iam';
 import { ToastLib } from '@/lib/toastLib';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ export const useLoginFormLogic = () => {
 
   const loginMutation = useMutation({
     mutationKey: ['login'],
-    mutationFn: async (reqBody: LoginReqBodyType) => {
+    mutationFn: async (reqBody: LoginReqBody) => {
       const errorData = await login(reqBody);
       if (errorData) {
         throw new Error(JSON.stringify(errorData));
@@ -33,7 +33,7 @@ export const useLoginFormLogic = () => {
       password: '',
     },
     validators: {
-      onSubmit: LoginReqBodySchema,
+      onSubmit: LoginFormSchema,
     },
     onSubmit: ({ value }) => {
       loginMutation.mutate(value);

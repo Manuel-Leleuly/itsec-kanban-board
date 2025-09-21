@@ -1,18 +1,18 @@
 'use client';
 
-import { updateTicket } from '@/actions/serverActions';
-import { TicketType } from '@/api/tickets/models/tickets';
+import { updateTicket } from '@/api/tickets/actions/ticketServerAction';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { ToastLib } from '@/lib/toastLib';
 import { ObjectUtils } from '@/utils/objectUtils';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export const useTicketDataLogic = (tickets: TicketType[]) => {
+export const useTicketDataLogic = (tickets: Ticket[]) => {
   const router = useRouter();
 
   const [ticketData, setTicketData] = useState(() => {
-    const ticketMap: Record<'todo' | 'doing' | 'done', TicketType[]> = {
+    const ticketMap: Record<'todo' | 'doing' | 'done', Ticket[]> = {
       todo: [],
       doing: [],
       done: [],

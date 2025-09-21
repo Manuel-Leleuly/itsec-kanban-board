@@ -26,11 +26,13 @@ export const KanbanSidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button className='w-10 h-10 rounded-lg bg-[#2CBA7A] hover:bg-[#21925f] text-black flex justify-center items-center'>
-              {user.name[0].toUpperCase()}
+              {user.first_name[0].toUpperCase()}
             </Button>
           </TooltipTrigger>
           <TooltipContent side='right'>
-            <p>{user.name}</p>
+            <p>
+              {user.first_name} {user.last_name}
+            </p>
           </TooltipContent>
         </Tooltip>
 

@@ -1,10 +1,10 @@
 'use client';
 
-import { UserType } from '@/api/users/models/users';
+import { UserResponse } from '@/api/iam/models/iam';
 import { createContext, ReactNode, useContext } from 'react';
 
 interface ConfigProviderType {
-  user: UserType;
+  user: UserResponse;
 }
 
 const ConfigContext = createContext<ConfigProviderType>(
@@ -17,7 +17,7 @@ export const ConfigContextProvider = ({
   user,
   children,
 }: {
-  user: UserType;
+  user: UserResponse;
   children: ReactNode;
 }) => {
   return (

@@ -15,7 +15,13 @@ export const LoginForm = () => {
   const getErrorMessage = () => {
     if (error) {
       const errorData = FetchUtil.parseServerActionError(error);
-      return errorData.error_message;
+      const { response_data } = errorData;
+      if (response_data) {
+        if (typeof response_data === 'string') {
+          return response_data;
+        }
+        return response_data.message;
+      }
     }
     return '';
   };

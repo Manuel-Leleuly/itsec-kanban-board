@@ -1,6 +1,6 @@
 'use client';
 
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import {
   KanbanModalBody,
   KanbanModalContent,
@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogTitle } from '@/components/ui/dialog';
 import { useDeleteTicketLogic } from '@/logic/useDeleteTicketLogic';
-import { ObjectUtils } from '@/utils/objectUtils';
 
 export const DeleteTicketModal = ({
   isOpen,
@@ -21,14 +20,12 @@ export const DeleteTicketModal = ({
   isOpen: boolean;
   onSuccess: () => void;
   onCancel: () => void;
-  ticketData: TicketType;
+  ticketData: Ticket;
 }) => {
   const { onDeleteSubmit, isLoading } = useDeleteTicketLogic(onSuccess);
 
-  const onDeleteClick = () => {
-    const newTicketData = ObjectUtils.cloneObject(ticketData);
-    newTicketData.deletedAt = new Date().toISOString();
-    onDeleteSubmit({ ticketId: newTicketData.id, reqBody: newTicketData });
+  const onDeleteClick = async () => {
+    await onDeleteSubmit(ticketData.id);
   };
 
   return (

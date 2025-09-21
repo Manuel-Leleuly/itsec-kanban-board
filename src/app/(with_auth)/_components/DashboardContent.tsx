@@ -1,12 +1,12 @@
 'use client';
 
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { useTicketDataLogic } from '@/logic/useTicketDataLogic';
 import { closestCorners, DndContext, DragOverlay } from '@dnd-kit/core';
 import { BoardColumn } from './BoardColumn';
 import { TicketCard } from './TicketCard';
 
-export const DashboardContent = ({ tickets }: { tickets: TicketType[] }) => {
+export const DashboardContent = ({ tickets }: { tickets: Ticket[] }) => {
   const {
     ticketData,
     sensors,

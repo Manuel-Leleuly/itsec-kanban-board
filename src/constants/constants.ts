@@ -1,10 +1,9 @@
-import z from 'zod';
-
 export const globalVar = {
-  MOCKAPI_BASE_URL: process.env.MOCKAPI_BASE_URL ?? '',
+  BASE_URL: process.env.BASE_URL ?? '',
 };
 
-export const COOKIE_KEYS = z.enum(['USER']).enum;
-
-// for easy filtering in mockapi
-export const DELETED_AT_DEFAULT = 'not_deleted';
+export enum COOKIE_KEYS {
+  USER = 'user',
+  ACCESS_TOKEN = 'access_token',
+  REFRESH_TOKEN = 'refresh_token',
+}

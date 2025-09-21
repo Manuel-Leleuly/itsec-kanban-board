@@ -1,50 +1,55 @@
+import {
+  Ticket,
+  TicketCreateUpdateReqBody,
+  TicketDelete,
+  TicketDeleteSchema,
+  TicketResponse,
+  TicketResponseSchema,
+  TicketSchema,
+} from '@/api/tickets/models/tickets';
 import { FetchUtil } from '@/utils/fetchUtils';
 import { AxiosInstance } from 'axios';
-import {
-  CreateUpdateTicketReqBodyType,
-  TicketResponseSchema,
-  TicketResponseType,
-  TicketSchema,
-  TicketSearchParam,
-  TicketType,
-} from './models/tickets';
 
 export class TicketApi {
-  static getAllTickets = async (
+  static createTicket = async (
     network: AxiosInstance,
-    params?: TicketSearchParam,
+    reqBody: TicketCreateUpdateReqBody,
   ) => {
-    return await FetchUtil.validateResponse<TicketResponseType>(
-      () => network.get('/tickets', { params }),
+    return await FetchUtil.validateResponse<TicketResponse>(
+      () => network.post('/kanban/v1/tickets', reqBody),
       TicketResponseSchema,
     );
   };
 
-  static getTicketById = async (network: AxiosInstance, ticketId: number) => {
-    return await FetchUtil.validateResponse<TicketType>(
-      () => network.get(`/tickets/${ticketId}`),
+  static getAllTickets = async (network: AxiosInstance) => {
+    return await FetchUtil.validateResponse<TicketResponse>(
+      () => network.get('/kanban/v1/tickets'),
+      TicketResponseSchema,
+    );
+  };
+
+  static getTicketById = async (network: AxiosInstance, ticketId: string) => {
+    return await FetchUtil.validateResponse<Ticket>(
+      () => network.get(`/kanban/v1/tickets/${ticketId}`),
       TicketSchema,
     );
   };
 
-  static createTicket = async (
+  static updateTicket = async (
     network: AxiosInstance,
-    reqBody: CreateUpdateTicketReqBodyType,
+    ticketId: string,
+    reqBody: TicketCreateUpdateReqBody,
   ) => {
-    return await FetchUtil.validateResponse<TicketType>(
-      () => network.post('/tickets', reqBody),
+    return await FetchUtil.validateResponse<Ticket>(
+      () => network.put(`/kanban/v1/tickets/${ticketId}`, reqBody),
       TicketSchema,
     );
   };
 
-  static updateTicketById = async (
-    network: AxiosInstance,
-    ticketId: number,
-    reqBody: CreateUpdateTicketReqBodyType,
-  ) => {
-    return await FetchUtil.validateResponse<TicketType>(
-      () => network.put(`/tickets/${ticketId}`, reqBody),
-      TicketSchema,
+  static deleteTicket = async (network: AxiosInstance, ticketId: string) => {
+    return await FetchUtil.validateResponse<TicketDelete>(
+      () => network.delete(`/kanban/v1/tickets/${ticketId}`),
+      TicketDeleteSchema,
     );
   };
 }

@@ -1,4 +1,4 @@
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TicketAssignee } from '../../_components/TicketAssignee';
 
@@ -18,7 +18,7 @@ const renderDate = (date: Date) => {
   return `${day} ${month} ${year} ${time}`;
 };
 
-export const TicketContent = ({ ticket }: { ticket: TicketType }) => {
+export const TicketContent = ({ ticket }: { ticket: Ticket }) => {
   return (
     <Card className='w-full'>
       <CardHeader>
@@ -29,8 +29,8 @@ export const TicketContent = ({ ticket }: { ticket: TicketType }) => {
           <p className='lg:col-span-2'>{ticket.description}</p>
           <div className='text-sm'>
             <p className='font-semibold'>Info</p>
-            <p>Created at: {renderDate(new Date(ticket.createdAt))}</p>
-            <p>Updated at: {renderDate(new Date(ticket.updatedAt))}</p>
+            <p>Created at: {renderDate(new Date(ticket.created_at))}</p>
+            <p>Updated at: {renderDate(new Date(ticket.updated_at))}</p>
           </div>
         </div>
 

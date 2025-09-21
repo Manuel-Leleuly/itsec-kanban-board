@@ -1,6 +1,6 @@
 'use client';
 
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { cn } from '@/lib/utils';
 import { useDroppable } from '@dnd-kit/core';
 import {
@@ -18,9 +18,9 @@ export const BoardColumn = ({
 }: {
   columnName: string;
   columnId: string;
-  tickets: TicketType[];
+  tickets: Ticket[];
   className?: string;
-  activeTicket: TicketType | null;
+  activeTicket: Ticket | null;
 }) => {
   const { setNodeRef } = useDroppable({ id: columnId });
 

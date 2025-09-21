@@ -1,6 +1,6 @@
 'use client';
 
-import { TicketType } from '@/api/tickets/models/tickets';
+import { Ticket } from '@/api/tickets/models/tickets';
 import { Button } from '@/components/ui/button';
 import { sleepAsync } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,7 @@ import { DeleteTicketModal } from './DeleteTicketModal';
 const Modals = z.enum(['EDIT', 'DELETE']).enum;
 type ModalType = keyof typeof Modals;
 
-export const ActionButtons = ({ ticket }: { ticket: TicketType }) => {
+export const ActionButtons = ({ ticket }: { ticket: Ticket }) => {
   const router = useRouter();
   const [selectedModal, setSelectedModal] = useState<ModalType | null>(null);
 

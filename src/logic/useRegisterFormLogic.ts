@@ -1,10 +1,7 @@
 'use client';
 
-import { register } from '@/actions/serverActions';
-import {
-  CreateUserFormSchema,
-  CreateUserFormType,
-} from '@/api/users/models/users';
+import { register } from '@/api/iam/actions/iamServerActions';
+import { UserCreateFormSchema, UserCreateReqBody } from '@/api/iam/models/iam';
 import { ToastLib } from '@/lib/toastLib';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
@@ -15,12 +12,12 @@ export const useRegisterFormLogic = () => {
 
   const registerMutation = useMutation({
     mutationKey: ['register'],
-    mutationFn: async (reqBody: CreateUserFormType) => {
+    mutationFn: async (reqBody: UserCreateReqBody) => {
       const errorData = await register({
         email: reqBody.email,
         password: reqBody.password,
-        name: `${reqBody.first_name} ${reqBody.last_name}`,
-        createdAt: new Date().toISOString(),
+        first_name: reqBody.first_name,
+        last_name: reqBody.last_name,
       });
       if (errorData) {
         throw new Error(JSON.stringify(errorData));
@@ -44,7 +41,7 @@ export const useRegisterFormLogic = () => {
       retype_password: '',
     },
     validators: {
-      onSubmit: CreateUserFormSchema,
+      onSubmit: UserCreateFormSchema,
     },
     onSubmit: async ({ value }) => {
       await registerMutation.mutateAsync(value);

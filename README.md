@@ -24,7 +24,7 @@ bun --bun run dev
 
 > [!WARNING] This repo uses [MockAPI](https://mockapi.io/) for storing and
 > manipulating data. Please take a look at
-> [TicketSchema](src/api/tickets/models/tickets.ts/) and
+> [TicketSchema](src/api/tickets/models/tickets.ts) and
 > [UserSchema](src/api/users/models/users.ts) for creating the data tables
 
 ## Development Requirements
@@ -34,9 +34,9 @@ bun --bun run dev
 
 ## Environment Variables
 
-| Name             | Optional | Description                          |
-| ---------------- | -------- | ------------------------------------ |
-| MOCKAPI_BASE_URL | no       | Base url of MockAPI for storing data |
+| Name     | Optional | Description               |
+|----------|----------|---------------------------|
+| BASE_URL | no       | Base url for storing data |
 
 ## Current limitations / errors
 
