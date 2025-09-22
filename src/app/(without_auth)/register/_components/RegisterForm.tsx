@@ -1,14 +1,15 @@
 'use client';
 
 import { UserCreateFormSchema } from '@/api/iam/models/iam';
-import { AuthInput } from '@/components/Input/AuthInput';
 import { FieldError } from '@/components/Input/FieldError';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 import { useRegisterFormLogic } from '@/logic/useRegisterFormLogic';
 import { FetchUtil } from '@/utils/fetchUtils';
-import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 export const RegisterForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -25,67 +26,75 @@ export const RegisterForm = () => {
   return (
     <form
       className='space-y-4'
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        registerForm.handleSubmit();
+        await registerForm.handleSubmit();
       }}
     >
-      <registerForm.Field
-        name='first_name'
-        validators={{ onChange: UserCreateFormSchema.shape.first_name }}
-      >
-        {(field) => (
-          <div className='space-y-2'>
-            <AuthInput
-              type='text'
-              id={field.name}
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => {
-                e.preventDefault();
-                field.handleChange(e.target.value);
-              }}
-              placeholder='First Name'
-              className='w-full'
-              disabled={isLoading}
-            />
-            <FieldError
-              errorMessages={field.state.meta.errors.map(
-                (error) => error?.message,
-              )}
-            />
-          </div>
-        )}
-      </registerForm.Field>
+      <div className='grid grid-cols-2 gap-4'>
+        <registerForm.Field
+          name='first_name'
+          validators={{ onChange: UserCreateFormSchema.shape.first_name }}
+        >
+          {(field) => (
+            <div className='space-y-2'>
+              <Label htmlFor={field.name} className='text-sm font-medium'>
+                First name
+              </Label>
+              <Input
+                type='text'
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder='John'
+                className={cn(
+                  'h-11 text-base',
+                  !!field.state.meta.errors.length && 'border-destructive',
+                )}
+                disabled={isLoading}
+              />
+              <FieldError
+                errorMessages={field.state.meta.errors.map(
+                  (error) => error?.message,
+                )}
+              />
+            </div>
+          )}
+        </registerForm.Field>
 
-      <registerForm.Field
-        name='last_name'
-        validators={{ onChange: UserCreateFormSchema.shape.last_name }}
-      >
-        {(field) => (
-          <div className='space-y-2'>
-            <AuthInput
-              type='text'
-              id={field.name}
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => {
-                e.preventDefault();
-                field.handleChange(e.target.value);
-              }}
-              placeholder='Last Name'
-              className='w-full'
-              disabled={isLoading}
-            />
-            <FieldError
-              errorMessages={field.state.meta.errors.map(
-                (error) => error?.message,
-              )}
-            />
-          </div>
-        )}
-      </registerForm.Field>
+        <registerForm.Field
+          name='last_name'
+          validators={{ onChange: UserCreateFormSchema.shape.last_name }}
+        >
+          {(field) => (
+            <div className='space-y-2'>
+              <Label htmlFor={field.name} className='text-sm font-medium'>
+                Last name
+              </Label>
+              <Input
+                type='text'
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder='Doe'
+                className={cn(
+                  'h-11 text-base',
+                  !!field.state.meta.errors.length && 'border-destructive',
+                )}
+                disabled={isLoading}
+              />
+              <FieldError
+                errorMessages={field.state.meta.errors.map(
+                  (error) => error?.message,
+                )}
+              />
+            </div>
+          )}
+        </registerForm.Field>
+      </div>
 
       <registerForm.Field
         name='email'
@@ -93,17 +102,20 @@ export const RegisterForm = () => {
       >
         {(field) => (
           <div className='space-y-2'>
-            <AuthInput
-              type='text'
+            <Label htmlFor={field.name} className='text-sm font-medium'>
+              Email
+            </Label>
+            <Input
+              type='email'
               id={field.name}
               name={field.name}
               value={field.state.value}
-              onChange={(e) => {
-                e.preventDefault();
-                field.handleChange(e.target.value);
-              }}
-              placeholder='Email'
-              className='w-full'
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder='johndoe@example.com'
+              className={cn(
+                'h-11 text-base',
+                !!field.state.meta.errors.length && 'border-destructive',
+              )}
               disabled={isLoading}
             />
             <FieldError
@@ -121,32 +133,37 @@ export const RegisterForm = () => {
       >
         {(field) => (
           <div className='space-y-2'>
+            <Label htmlFor={field.name} className='text-sm font-medium'>
+              Password
+            </Label>
             <div className='relative'>
-              <AuthInput
+              <Input
                 type={isPasswordVisible ? 'text' : 'password'}
                 id={field.name}
                 name={field.name}
                 value={field.state.value}
-                onChange={(e) => {
-                  e.preventDefault();
-                  field.handleChange(e.target.value);
-                }}
-                placeholder='Password'
-                className='w-full'
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder='Create a strong password'
+                className={cn(
+                  'h-11 text-base',
+                  !!field.state.meta.errors.length && 'border-destructive',
+                )}
                 disabled={isLoading}
               />
-              <button
+              <Button
                 type='button'
-                className='absolute inset-y-0 right-0 flex items-center pr-1'
+                variant='ghost'
+                size='sm'
+                className='absolute right-0 top-0 h-full px-3 hover:bg-transparent'
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <FaEye className='h-4 w-4 text-muted-foreground' />
+                  <EyeOff className='h-4 w-4 text-muted-foreground' />
                 ) : (
-                  <FaEyeSlash className='h-4 w-4 text-muted-foreground' />
+                  <Eye className='h-4 w-4 text-muted-foreground' />
                 )}
-              </button>
+              </Button>
             </div>
             <FieldError
               errorMessages={field.state.meta.errors.map(
@@ -163,32 +180,37 @@ export const RegisterForm = () => {
       >
         {(field) => (
           <div className='space-y-2'>
+            <Label htmlFor={field.name} className='text-sm font-medium'>
+              Re-type Password
+            </Label>
             <div className='relative'>
-              <AuthInput
+              <Input
                 type={isPasswordVisible ? 'text' : 'password'}
                 id={field.name}
                 name={field.name}
                 value={field.state.value}
-                onChange={(e) => {
-                  e.preventDefault();
-                  field.handleChange(e.target.value);
-                }}
-                placeholder='Re-type Password'
-                className='w-full'
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder='Confirm your password'
+                className={cn(
+                  'h-11 text-base',
+                  !!field.state.meta.errors.length && 'border-destructive',
+                )}
                 disabled={isLoading}
               />
-              <button
+              <Button
                 type='button'
-                className='absolute inset-y-0 right-0 flex items-center pr-1'
+                variant='ghost'
+                size='sm'
+                className='absolute right-0 top-0 h-full px-3 hover:bg-transparent'
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <FaEye className='h-4 w-4 text-muted-foreground' />
+                  <EyeOff className='h-4 w-4 text-muted-foreground' />
                 ) : (
-                  <FaEyeSlash className='h-4 w-4 text-muted-foreground' />
+                  <Eye className='h-4 w-4 text-muted-foreground' />
                 )}
-              </button>
+              </Button>
             </div>
             <FieldError
               errorMessages={field.state.meta.errors.map(
@@ -199,28 +221,14 @@ export const RegisterForm = () => {
         )}
       </registerForm.Field>
 
-      <div className='flex flex-col space-y-2 items-center'>
-        <div className='flex items-center space-x-2 text-sm'>
-          <p>Already have an account?</p>
-          <Link href={'/login'}>
-            <Button
-              type='button'
-              variant={'link'}
-              className='text-blue-500 font-normal px-0'
-            >
-              Sign in
-            </Button>
-          </Link>
-        </div>
-        <Button
-          type='submit'
-          className='w-full text-xl py-2 h-fit bg-blue-500 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-not-allowed'
-          disabled={!registerForm.state.isFieldsValid || isLoading}
-        >
-          {isLoading ? 'Please wait...' : 'Register'}
-        </Button>
-        <em className='text-red-500 text-sm'>{getErrorMessage()}</em>
-      </div>
+      <Button
+        type='submit'
+        className='w-full h-11 text-base font-medium'
+        disabled={!registerForm.state.isFieldsValid || isLoading}
+      >
+        {isLoading ? 'Creating account...' : 'Create account'}
+      </Button>
+      <em className='text-red-500 text-sm'>{getErrorMessage()}</em>
     </form>
   );
 };

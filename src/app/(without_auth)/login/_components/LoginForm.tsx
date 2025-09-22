@@ -1,12 +1,13 @@
 'use client';
 
-import { AuthInput } from '@/components/Input/AuthInput';
+import { FieldError } from '@/components/Input/FieldError';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useLoginFormLogic } from '@/logic/useLoginFormLogic';
 import { FetchUtil } from '@/utils/fetchUtils';
-import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 export const LoginForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -29,41 +30,33 @@ export const LoginForm = () => {
   return (
     <form
       className='space-y-8'
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        loginForm.handleSubmit();
+        await loginForm.handleSubmit();
       }}
     >
       <loginForm.Field name='email'>
         {(field) => (
           <div className='space-y-2'>
-            <AuthInput
+            <Label htmlFor={field.name} className='text-sm font-medium'>
+              Email address
+            </Label>
+            <Input
               type='email'
               id={field.name}
               name={field.name}
               value={field.state.value}
-              onChange={(e) => {
-                e.preventDefault();
-                field.handleChange(e.target.value);
-              }}
+              onChange={(e) => field.handleChange(e.target.value)}
               placeholder='Email'
               className='w-full'
               disabled={isLoading}
             />
-            {!!field.state.meta.errors.length && (
-              <em className='text-red-500 text-sm'>
-                {field.state.meta.errors
-                  .map((error) => error?.message)
-                  .filter(Boolean)
-                  .map((errorMessage, index) => (
-                    <span key={errorMessage! + index}>
-                      {errorMessage}
-                      <br />
-                    </span>
-                  ))}
-              </em>
-            )}
+            <FieldError
+              errorMessages={field.state.meta.errors.map(
+                (error) => error?.message,
+              )}
+            />
           </div>
         )}
       </loginForm.Field>
@@ -71,72 +64,52 @@ export const LoginForm = () => {
       <loginForm.Field name='password'>
         {(field) => (
           <div className='space-y-2'>
+            <Label htmlFor={field.name} className='text-sm font-medium'>
+              Password
+            </Label>
             <div className='relative'>
-              <AuthInput
+              <Input
                 type={isPasswordVisible ? 'text' : 'password'}
                 id={field.name}
                 name={field.name}
                 value={field.state.value}
-                onChange={(e) => {
-                  e.preventDefault();
-                  field.handleChange(e.target.value);
-                }}
+                onChange={(e) => field.handleChange(e.target.value)}
                 placeholder='Password'
                 className='w-full'
                 disabled={isLoading}
               />
-              <button
+              <Button
                 type='button'
-                className='absolute inset-y-0 right-0 flex items-center pr-1'
+                variant='ghost'
+                size='sm'
+                className='absolute right-0 top-0 h-full px-3 hover:bg-transparent'
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 disabled={isLoading}
               >
                 {isPasswordVisible ? (
-                  <FaEye className='h-4 w-4 text-muted-foreground' />
+                  <EyeOff className='h-4 w-4 text-muted-foreground' />
                 ) : (
-                  <FaEyeSlash className='h-4 w-4 text-muted-foreground' />
+                  <Eye className='h-4 w-4 text-muted-foreground' />
                 )}
-              </button>
+              </Button>
             </div>
-            {!!field.state.meta.errors.length && (
-              <em className='text-red-500 text-sm'>
-                {field.state.meta.errors
-                  .map((error) => error?.message)
-                  .filter(Boolean)
-                  .map((errorMessage, index) => (
-                    <span key={errorMessage! + index}>
-                      {errorMessage}
-                      <br />
-                    </span>
-                  ))}
-              </em>
-            )}
+            <FieldError
+              errorMessages={field.state.meta.errors.map(
+                (error) => error?.message,
+              )}
+            />
           </div>
         )}
       </loginForm.Field>
 
-      <div className='flex flex-col space-y-2 items-center'>
-        <div className='flex items-center space-x-2 text-sm'>
-          <p>Don&#39;t have an account?</p>
-          <Link href={'/register'}>
-            <Button
-              type='button'
-              variant={'link'}
-              className='text-blue-500 font-normal px-0'
-            >
-              Sign up
-            </Button>
-          </Link>
-        </div>
-        <Button
-          type='submit'
-          className='w-full text-xl py-2 h-fit bg-blue-500 hover:bg-blue-600 hover:cursor-pointer disabled:cursor-not-allowed'
-          disabled={!loginForm.state.isFieldsValid || isLoading}
-        >
-          {isLoading ? 'Logging in...' : 'Login'}
-        </Button>
-        <em className='text-red-500 text-sm'>{getErrorMessage()}</em>
-      </div>
+      <Button
+        type='submit'
+        className='w-full h-11 text-base font-medium'
+        disabled={!loginForm.state.isFieldsValid || isLoading}
+      >
+        {isLoading ? 'Signing in...' : 'Sign in'}
+      </Button>
+      <em className='text-red-500 text-sm'>{getErrorMessage()}</em>
     </form>
   );
 };
