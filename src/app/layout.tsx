@@ -3,13 +3,8 @@ import { cn } from '@/lib/utils';
 import { ProgressAppProvider } from '@/providers/progressAppProvider';
 import { QueryProvider } from '@/providers/queryProvider';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import './globals.css';
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: 'Kanban Flow – Simple Task Management Board',
@@ -55,6 +50,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://toothbrush-kanban-flow.vercel.app'),
 };
 
+const manrope = Manrope({
+  variable: '--font-manrope',
+  subsets: ['latin'],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -62,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={cn('antialiased', inter.className)}>
+      <body className={cn('antialiased', manrope.className)}>
         <ProgressAppProvider>
           <QueryProvider>
             {children}

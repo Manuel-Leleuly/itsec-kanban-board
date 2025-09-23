@@ -78,5 +78,28 @@ export const login = async (reqBody: LoginReqBody) => {
 };
 
 export const logout = async () => {
-  (await cookies()).delete(COOKIE_KEYS.USER);
+  try {
+    const network = NetworkUtils.withCredentials();
+    await IamApi.logout(network);
+
+    const serverCookies = await cookies();
+    serverCookies.getAll().forEach((cookie) => {
+      serverCookies.delete(cookie.name);
+    });
+    return null;
+  } catch (err) {
+    let errorMessage = (err as Error).message;
+    if (isAxiosError(err)) {
+      const { response } = err;
+      if (response) {
+        errorMessage = response.data.message;
+      }
+    }
+
+    return FetchUtil.getErrorFromServerAction({
+      error: err as Error,
+      errorMessage,
+      serverActionLabel: 'logout',
+    });
+  }
 };

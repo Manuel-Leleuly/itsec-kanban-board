@@ -19,7 +19,7 @@ export default async function WithAuthLayout({ children }: PageLayout) {
 
   return (
     <ConfigContextProvider user={user}>
-      <div className='flex'>
+      <div className='h-screen flex bg-background'>
         <KanbanSidebar />
         <div className='w-full max-h-screen overflow-y-auto'>
           <Navbar />

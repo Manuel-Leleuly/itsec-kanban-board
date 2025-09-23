@@ -70,3 +70,9 @@ export const UserCreateFormSchema = z
   });
 
 export type UserCreateForm = z.infer<typeof UserCreateFormSchema>;
+
+export const LogoutResponseSchema = z.object({
+  message: z.string(),
+});
+
+export type LogoutResponse = z.infer<typeof LogoutResponseSchema>;

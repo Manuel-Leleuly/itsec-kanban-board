@@ -1,5 +1,7 @@
 import {
   LoginReqBody,
+  LogoutResponse,
+  LogoutResponseSchema,
   TokenResponse,
   TokenResponseSchema,
   UserCreateReqBody,
@@ -31,6 +33,13 @@ export class IamApi {
     return await FetchUtil.validateResponse<UserResponse>(
       () => network.get('/iam/v1/users/me'),
       UserResponseSchema,
+    );
+  };
+
+  static logout = async (network: AxiosInstance) => {
+    return await FetchUtil.validateResponse<LogoutResponse>(
+      () => network.post('/iam/v1/logout'),
+      LogoutResponseSchema,
     );
   };
 }

@@ -9,7 +9,10 @@ export const useLogoutLogic = () => {
   const router = useRouter();
   const logoutMutation = useMutation({
     mutationKey: ['logout'],
-    mutationFn: logout,
+    mutationFn: async () => {
+      const errorData = await logout();
+      if (errorData) throw errorData;
+    },
     onSuccess: () => {
       ToastLib.success('Redirect to login...');
       router.replace('/login');
