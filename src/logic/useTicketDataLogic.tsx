@@ -2,15 +2,13 @@
 
 import { updateTicket } from '@/api/tickets/actions/ticketServerAction';
 import { Ticket } from '@/api/tickets/models/tickets';
+import { TicketStatusType } from '@/constants/constants';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { ToastLib } from '@/lib/toastLib';
 import { ObjectUtils } from '@/utils/objectUtils';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export const useTicketDataLogic = (tickets: Ticket[]) => {
-  const router = useRouter();
-
   const [ticketData, setTicketData] = useState(() => {
     const ticketMap: Record<'todo' | 'doing' | 'done', Ticket[]> = {
       todo: [],
@@ -25,6 +23,8 @@ export const useTicketDataLogic = (tickets: Ticket[]) => {
     return ticketMap;
   });
 
+  console.log({ ticketData });
+
   const {
     sensors,
     handleDragEnd,
@@ -32,6 +32,7 @@ export const useTicketDataLogic = (tickets: Ticket[]) => {
     handleDragStart,
     dndData: newTicketData,
     activeData: activeTicket,
+    activeColumn,
   } = useDragAndDrop({
     dataObj: ticketData,
     setDataObj: setTicketData,
@@ -41,54 +42,54 @@ export const useTicketDataLogic = (tickets: Ticket[]) => {
       const updatedTicket = ObjectUtils.cloneObject(ticket);
       updatedTicket.status = columnId as (typeof updatedTicket)['status'];
 
-      await updateTicket(updatedTicket.id, updatedTicket);
+      const error = await updateTicket(updatedTicket.id, updatedTicket);
+      if (error) throw new Error(JSON.stringify(error));
     },
     onDragEndSuccess: (_, variables) => {
       if (variables.data.status === variables.newColumnId) return;
+
       ToastLib.success(
         <p>
           Successfully moved from <strong>{variables.data.status}</strong> to{' '}
           <strong>{variables.newColumnId}</strong>
         </p>,
       );
-      router.refresh();
+
+      setTicketData((prevTicketData) => {
+        const updatedTicketIndex = prevTicketData[
+          variables.newColumnId as TicketStatusType
+        ].findIndex((ticket) => ticket.id === variables.data.id);
+        if (updatedTicketIndex < 0) return prevTicketData;
+        prevTicketData[variables.newColumnId as TicketStatusType][
+          updatedTicketIndex
+        ].status = variables.newColumnId as TicketStatusType;
+        return prevTicketData;
+      });
     },
     onDragEndError: () => {
       ToastLib.error('Failed to move task. Please try again');
     },
   });
 
+  // this is to retain the position of the ticket in the board
   useEffect(() => {
     setTicketData((prevTicketData) => {
       const newTicketData = ObjectUtils.cloneObject(prevTicketData);
 
-      // add new tickets
-      const currTickets = ObjectUtils.keys(newTicketData).flatMap(
-        (ticketStatus) => newTicketData[ticketStatus],
-      );
-      const newTickets = tickets.filter(
-        (ticket) =>
-          !currTickets.some((currTicket) => ticket.id === currTicket.id),
-      );
-      for (const newTicket of newTickets) {
-        newTicketData[newTicket.status].push(newTicket);
-      }
-
-      // update a ticket who has been moved
-      const updatedTicket = tickets.find((ticket) =>
-        currTickets.some(
-          (currTicket) =>
-            currTicket.id === ticket.id && currTicket.status !== ticket.status,
-        ),
-      );
-      if (updatedTicket) {
-        const ticketDataIndex = newTicketData[updatedTicket.status].findIndex(
-          (ticket) => ticket.id === updatedTicket.id,
+      ObjectUtils.keys(newTicketData).forEach((ticketStatus) => {
+        newTicketData[ticketStatus] = newTicketData[ticketStatus].filter(
+          (ticketData) => tickets.some((ticket) => ticket.id === ticketData.id),
         );
-        if (ticketDataIndex >= 0) {
-          newTicketData[updatedTicket.status][ticketDataIndex].status =
-            updatedTicket.status;
+      });
+      for (const ticket of tickets) {
+        if (
+          newTicketData[ticket.status as TicketStatusType].some(
+            (ticketData) => ticketData.id === ticket.id,
+          )
+        ) {
+          continue;
         }
+        newTicketData[ticket.status as TicketStatusType].push(ticket);
       }
 
       return newTicketData;
@@ -102,5 +103,6 @@ export const useTicketDataLogic = (tickets: Ticket[]) => {
     handleDragOver,
     handleDragEnd,
     handleDragStart,
+    activeColumn,
   };
 };

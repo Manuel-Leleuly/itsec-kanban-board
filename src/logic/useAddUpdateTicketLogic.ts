@@ -23,14 +23,13 @@ export const useAddUpdateTicketLogic = ({
   const ticketMutation = useMutation({
     mutationKey: ['addUpdateTicket'],
     mutationFn: async (value: TicketCreateUpdateForm) => {
-      const today = new Date().toISOString();
-      let error: Record<string, unknown> | null = null;
+      let error: Record<string, unknown> | null;
       if (ticketData) {
         error = await updateTicket(ticketData.id, value);
       } else {
         error = await createTicket(value);
       }
-      if (error) throw error;
+      if (error) throw new Error(JSON.stringify(error, null, 2));
     },
     onSuccess: () => {
       ToastLib.success(
@@ -38,7 +37,8 @@ export const useAddUpdateTicketLogic = ({
       );
       onSuccess();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error(error);
       ToastLib.error(
         `Failed to ${ticketData ? 'update' : 'create'} task. Please try again`,
       );

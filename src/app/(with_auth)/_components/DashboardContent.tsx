@@ -7,6 +7,7 @@ import { BoardColumn } from './BoardColumn';
 import { TicketCard } from './TicketCard';
 
 export const DashboardContent = ({ tickets }: { tickets: Ticket[] }) => {
+  console.log('dashboardContent', { tickets });
   const {
     ticketData,
     sensors,
@@ -14,6 +15,7 @@ export const DashboardContent = ({ tickets }: { tickets: Ticket[] }) => {
     handleDragOver,
     handleDragStart,
     activeTicket,
+    activeColumn,
   } = useTicketDataLogic(tickets);
 
   return (
@@ -24,24 +26,27 @@ export const DashboardContent = ({ tickets }: { tickets: Ticket[] }) => {
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
     >
-      <div className='flex justify-between gap-8 flex-nowrap overflow-x-auto no-scrollbar'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 h-full'>
         <BoardColumn
           columnName='TO DO'
           columnId='todo'
           tickets={ticketData.todo}
           activeTicket={activeTicket}
+          isOver={activeColumn === 'todo'}
         />
         <BoardColumn
           columnName='DOING'
           columnId='doing'
           tickets={ticketData.doing}
           activeTicket={activeTicket}
+          isOver={activeColumn === 'doing'}
         />
         <BoardColumn
           columnName='DONE'
           columnId='done'
           tickets={ticketData.done}
           activeTicket={activeTicket}
+          isOver={activeColumn === 'done'}
         />
       </div>
 

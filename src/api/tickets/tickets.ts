@@ -15,15 +15,18 @@ export class TicketApi {
     network: AxiosInstance,
     reqBody: TicketCreateUpdateReqBody,
   ) => {
-    return await FetchUtil.validateResponse<TicketResponse>(
+    return await FetchUtil.validateResponse<Ticket>(
       () => network.post('/kanban/v1/tickets', reqBody),
-      TicketResponseSchema,
+      TicketSchema,
     );
   };
 
-  static getAllTickets = async (network: AxiosInstance) => {
+  static getAllTickets = async (
+    network: AxiosInstance,
+    params?: { title: string },
+  ) => {
     return await FetchUtil.validateResponse<TicketResponse>(
-      () => network.get('/kanban/v1/tickets'),
+      () => network.get('/kanban/v1/tickets', { params }),
       TicketResponseSchema,
     );
   };

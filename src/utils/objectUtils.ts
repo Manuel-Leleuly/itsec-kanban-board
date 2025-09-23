@@ -4,7 +4,8 @@ export class ObjectUtils {
   };
 
   static cloneObject = <T extends Record<string, unknown>>(data: T): T => {
-    return JSON.parse(JSON.stringify(data)) as T;
+    const result = JSON.parse(JSON.stringify(data)) as T;
+    return result;
   };
 
   static cleanObject = <T extends Record<string, unknown>>(data: T) => {

@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 export const useSearchTicketLogic = () => {
   const router = useRouter();
-  const [query, setQuery] = useState('');
   const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('title') ?? '');
 
   useEffect(() => {
     const searchParams = new URLSearchParams();
@@ -15,11 +15,12 @@ export const useSearchTicketLogic = () => {
       searchParams.set('title', query);
     }
     router.push(`/?${searchParams.toString()}`);
+    router.refresh();
   }, [query]);
 
   const searchForm = useForm({
     defaultValues: {
-      searchQuery: searchParams.get('title') ?? '',
+      searchQuery: query,
     },
     validators: {
       onChangeAsyncDebounceMs: 500,

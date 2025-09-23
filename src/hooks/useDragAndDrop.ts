@@ -6,16 +6,10 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { Coordinates, DragStartEvent } from '@dnd-kit/core/dist/types';
+import { DragStartEvent } from '@dnd-kit/core/dist/types';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation } from '@tanstack/react-query';
-import {
-  Dispatch,
-  SetStateAction,
-  startTransition,
-  useOptimistic,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 export const useDragAndDrop = <T extends { id: string }>({
   dataObj,
@@ -46,11 +40,12 @@ export const useDragAndDrop = <T extends { id: string }>({
     }),
   );
 
-  const [optimisticDataObj, setOptimisticDataObj] = useOptimistic<
-    typeof dataObj | null
-  >(dataObj);
-
   const [activeData, setActiveData] = useState<T | null>(null);
+  const [activeColumn, setActiveColumn] = useState('');
+
+  // optimistic approach purposes for dragOver
+  const [originalColumn, setOriginalColumn] = useState('');
+  const [originalIndex, setOriginalIndex] = useState(0);
 
   const dragEndMutation = useMutation({
     mutationKey: ['dragEndSubmit'],
@@ -62,8 +57,38 @@ export const useDragAndDrop = <T extends { id: string }>({
       newColumnId: string;
     }) => onDragEndSubmit(data, newColumnId),
     onSuccess: onDragEndSuccess,
-    onError: onDragEndError,
+    onError: (error, variables, context) => {
+      console.log('mutation error', { error, variables, context });
+      revertData(variables.data, variables.newColumnId);
+      onDragEndError?.(error, variables, context);
+    },
   });
+
+  const revertData = useCallback(
+    (selectedData: T, finalColumn: string) => {
+      setDataObj((prevDataObj) => {
+        const originColumnData = prevDataObj[originalColumn];
+
+        // this is to prevent reverting data twice due to strict mode
+        // or other unknown magical thing that made me frustrated for hours
+        if (originColumnData.some((data) => data.id === selectedData.id)) {
+          return prevDataObj;
+        }
+
+        const finalColumnData = prevDataObj[finalColumn];
+        prevDataObj[finalColumn] = finalColumnData.filter(
+          (data) => data.id !== selectedData.id,
+        );
+        prevDataObj[originalColumn] = originColumnData
+          .slice(0, originalIndex)
+          .concat(selectedData)
+          .concat(originColumnData.slice(originalIndex));
+
+        return prevDataObj;
+      });
+    },
+    [originalColumn, originalIndex],
+  );
 
   const updateDragEndData = ({
     prevDataObj,
@@ -89,6 +114,7 @@ export const useDragAndDrop = <T extends { id: string }>({
 
   const handleDragEnd = async (event: DragEndEvent) => {
     setActiveData(null);
+    setActiveColumn('');
     const { active, over } = event;
     const activeId = active.id.toString();
     const overId = over ? over.id.toString() : null;
@@ -104,83 +130,16 @@ export const useDragAndDrop = <T extends { id: string }>({
     const activeIndex = dataObj[activeColumn].findIndex(
       (data) => data.id === activeId,
     );
-    const overIndex = dataObj[overColumn].findIndex(
-      (data) => data.id === overId,
-    );
 
-    startTransition(async () => {
-      setOptimisticDataObj((prevDataObj) => {
-        if (prevDataObj) {
-          return updateDragEndData({
-            prevDataObj,
-            activeColumn,
-            overColumn,
-            activeIndex,
-            overIndex,
-          });
-        }
-        return null;
-      });
-
-      await dragEndMutation.mutateAsync({
-        data: dataObj[activeColumn][activeIndex],
-        newColumnId: overColumn,
-      });
-
-      setDataObj((prevDataObj) => {
-        return updateDragEndData({
-          prevDataObj,
-          activeColumn,
-          overColumn,
-          activeIndex,
-          overIndex,
-        });
-      });
-      setOptimisticDataObj(null);
+    await dragEndMutation.mutateAsync({
+      data: dataObj[activeColumn][activeIndex],
+      newColumnId: overColumn,
     });
+
+    console.log('drag end mutation is finished');
   };
 
-  const updateDragOverData = ({
-    prevDataObj,
-    delta,
-    activeColumn,
-    overColumn,
-    activeId,
-    overId,
-  }: {
-    prevDataObj: typeof dataObj;
-    delta: Coordinates;
-    activeColumn: string;
-    overColumn: string;
-    activeId: string;
-    overId: string | null;
-  }) => {
-    const newDataObj = ObjectUtils.cloneObject(prevDataObj);
-    const activeData = newDataObj[activeColumn];
-    const overData = newDataObj[overColumn];
-
-    const activeIndex = activeData.findIndex((data) => data.id === activeId);
-    const overIndex = overData.findIndex((data) => data.id === overId);
-
-    const newIndex = () => {
-      const putOnBelowLastItem =
-        overIndex === overData.length - 1 && delta.y > 0;
-      const modifier = putOnBelowLastItem ? 1 : 0;
-      return overIndex >= 0 ? overIndex + modifier : overData.length + 1;
-    };
-
-    newDataObj[activeColumn] = newDataObj[activeColumn].filter(
-      (data) => data.id !== activeId,
-    );
-    newDataObj[overColumn] = overData
-      .slice(0, newIndex())
-      .concat(activeData[activeIndex])
-      .concat(overData.slice(newIndex()));
-
-    return newDataObj;
-  };
-
-  const handleDragOver = async (event: DragOverEvent) => {
+  const handleDragOver = useCallback(async (event: DragOverEvent) => {
     const { active, over, delta } = event;
     const activeId = active.id.toString();
     const overId = over?.id.toString() ?? null;
@@ -193,17 +152,38 @@ export const useDragAndDrop = <T extends { id: string }>({
 
     if (!activeColumn || !overColumn || activeColumn === overColumn) return;
 
+    setActiveColumn(overColumn);
     setDataObj((prevDataObj) => {
-      return updateDragOverData({
-        prevDataObj,
-        delta,
-        activeColumn,
-        overColumn,
-        activeId,
-        overId,
-      });
+      const newDataObj = ObjectUtils.cloneObject(prevDataObj);
+      const activeData = newDataObj[activeColumn];
+      const overData = newDataObj[overColumn];
+
+      const activeIndex = activeData.findIndex((data) => data.id === activeId);
+      const overIndex = overData.findIndex((data) => data.id === overId);
+
+      const newIndex = () => {
+        const putOnBelowLastItem =
+          overIndex === overData.length - 1 && delta.y > 0;
+        const modifier = putOnBelowLastItem ? 1 : 0;
+        return overIndex >= 0 ? overIndex + modifier : overData.length + 1;
+      };
+
+      newDataObj[activeColumn] = newDataObj[activeColumn].filter(
+        (data) => data.id !== activeId,
+      );
+      newDataObj[overColumn] = overData
+        .slice(0, newIndex())
+        .concat(activeData[activeIndex])
+        .concat(overData.slice(newIndex()));
+
+      console.log(
+        'new data from drag over',
+        JSON.stringify(newDataObj, null, 2),
+      );
+
+      return newDataObj;
     });
-  };
+  }, []);
 
   const handleDragStart = (event: DragStartEvent) => {
     const activeId = event.active.id;
@@ -211,11 +191,13 @@ export const useDragAndDrop = <T extends { id: string }>({
       event.active.data.current?.sortable.containerId ?? null;
     if (!activeColumn) return;
 
-    const selectedData = dataObj[activeColumn].find(
+    const selectedDataIndex = dataObj[activeColumn].findIndex(
       (data) => data.id === activeId,
     );
-    if (!selectedData) return;
-    setActiveData(selectedData);
+    if (selectedDataIndex < 0) return;
+    setActiveData(dataObj[activeColumn][selectedDataIndex]);
+    setOriginalColumn(activeColumn);
+    setOriginalIndex(selectedDataIndex);
   };
 
   return {
@@ -223,11 +205,12 @@ export const useDragAndDrop = <T extends { id: string }>({
     handleDragEnd,
     handleDragOver,
     handleDragStart,
-    dndData: optimisticDataObj ?? dataObj,
+    dndData: dataObj,
     /**
      * WARNING: make sure `handleDragStart` is implemented in the context,
      * otherwise this will result to `null` no matter what
      */
     activeData,
+    activeColumn,
   };
 };
