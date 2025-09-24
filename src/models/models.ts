@@ -55,3 +55,7 @@ export const ServerActionErrorSchema = z.object({
   error_message: z.string(),
   response_data: z.union([z.record(z.string(), z.any()), z.string()]).nullish(),
 });
+
+export const AxiosInterceptorErrorSchema = z.object({
+  message: z.string(),
+});

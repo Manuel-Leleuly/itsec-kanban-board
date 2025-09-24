@@ -23,8 +23,6 @@ export const useTicketDataLogic = (tickets: Ticket[]) => {
     return ticketMap;
   });
 
-  console.log({ ticketData });
-
   const {
     sensors,
     handleDragEnd,

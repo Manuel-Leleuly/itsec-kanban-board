@@ -7,7 +7,6 @@ import { BoardColumn } from './BoardColumn';
 import { TicketCard } from './TicketCard';
 
 export const DashboardContent = ({ tickets }: { tickets: Ticket[] }) => {
-  console.log('dashboardContent', { tickets });
   const {
     ticketData,
     sensors,

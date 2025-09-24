@@ -58,7 +58,6 @@ export const useDragAndDrop = <T extends { id: string }>({
     }) => onDragEndSubmit(data, newColumnId),
     onSuccess: onDragEndSuccess,
     onError: (error, variables, context) => {
-      console.log('mutation error', { error, variables, context });
       revertData(variables.data, variables.newColumnId);
       onDragEndError?.(error, variables, context);
     },
@@ -135,8 +134,6 @@ export const useDragAndDrop = <T extends { id: string }>({
       data: dataObj[activeColumn][activeIndex],
       newColumnId: overColumn,
     });
-
-    console.log('drag end mutation is finished');
   };
 
   const handleDragOver = useCallback(async (event: DragOverEvent) => {
@@ -175,11 +172,6 @@ export const useDragAndDrop = <T extends { id: string }>({
         .slice(0, newIndex())
         .concat(activeData[activeIndex])
         .concat(overData.slice(newIndex()));
-
-      console.log(
-        'new data from drag over',
-        JSON.stringify(newDataObj, null, 2),
-      );
 
       return newDataObj;
     });

@@ -42,4 +42,11 @@ export class IamApi {
       LogoutResponseSchema,
     );
   };
+
+  static refreshToken = async (network: AxiosInstance) => {
+    return await FetchUtil.validateResponse<TokenResponse>(
+      () => network.post('/iam/v1/token/refresh'),
+      TokenResponseSchema,
+    );
+  };
 }

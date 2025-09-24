@@ -29,6 +29,7 @@ export const useAddUpdateTicketLogic = ({
       } else {
         error = await createTicket(value);
       }
+      console.log('ticket mutation error', { error });
       if (error) throw new Error(JSON.stringify(error, null, 2));
     },
     onSuccess: () => {
@@ -37,8 +38,7 @@ export const useAddUpdateTicketLogic = ({
       );
       onSuccess();
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
       ToastLib.error(
         `Failed to ${ticketData ? 'update' : 'create'} task. Please try again`,
       );
