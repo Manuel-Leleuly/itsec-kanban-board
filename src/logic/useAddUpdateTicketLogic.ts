@@ -29,7 +29,6 @@ export const useAddUpdateTicketLogic = ({
       } else {
         error = await createTicket(value);
       }
-      console.log('ticket mutation error', { error });
       if (error) throw new Error(JSON.stringify(error, null, 2));
     },
     onSuccess: () => {

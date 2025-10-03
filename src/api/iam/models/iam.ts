@@ -16,7 +16,7 @@ export const LoginReqBodySchema = z.object({
 export type LoginReqBody = z.infer<typeof LoginReqBodySchema>;
 
 export const LoginFormSchema = z.object({
-  email: z.email(),
+  email: z.email({ error: 'Email must be in the correct format' }),
   password: z.string().nonempty({ error: 'Password is required' }),
 });
 

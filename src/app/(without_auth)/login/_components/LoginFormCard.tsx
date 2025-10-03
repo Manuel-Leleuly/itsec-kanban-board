@@ -17,7 +17,7 @@ export const LoginFormCard = () => {
           <div className='p-2 bg-primary rounded-lg'>
             <Kanban className='h-6 w-6 text-primary-foreground' />
           </div>
-          <h1 className='text-xl font-bold ml-2'>TaskFlow</h1>
+          <h1 className='text-xl font-bold ml-2'>Kanban Flow</h1>
         </div>
         <CardTitle className='text-2xl font-semibold'>Welcome back</CardTitle>
         <CardDescription className='text-base'>
@@ -33,6 +33,7 @@ export const LoginFormCard = () => {
             <Link
               href='/register'
               className='font-medium text-primary hover:underline'
+              data-test-id='signup-link'
             >
               Sign up
             </Link>

@@ -9,7 +9,7 @@ import { cn } from './utils';
 export class ToastLib {
   static success = (message: ReactNode) => {
     toast.custom((id) => (
-      <ToastComponent id={id} status='success'>
+      <ToastComponent id={id} status='success' data-testid='toast-success'>
         {message}
       </ToastComponent>
     ));
@@ -17,7 +17,7 @@ export class ToastLib {
 
   static error = (message: ReactNode) => {
     toast.custom((id) => (
-      <ToastComponent id={id} status='error'>
+      <ToastComponent id={id} status='error' data-testid='toast-error'>
         {message}
       </ToastComponent>
     ));

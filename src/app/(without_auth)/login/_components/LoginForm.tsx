@@ -51,6 +51,7 @@ export const LoginForm = () => {
               placeholder='Email'
               className='w-full'
               disabled={isLoading}
+              data-testid={field.name + '-input'}
             />
             <FieldError
               errorMessages={field.state.meta.errors.map(
@@ -77,6 +78,7 @@ export const LoginForm = () => {
                 placeholder='Password'
                 className='w-full'
                 disabled={isLoading}
+                data-testid={field.name + '-input'}
               />
               <Button
                 type='button'
@@ -106,6 +108,7 @@ export const LoginForm = () => {
         type='submit'
         className='w-full h-11 text-base font-medium'
         disabled={!loginForm.state.isFieldsValid || isLoading}
+        data-testid='login-submit'
       >
         {isLoading ? 'Signing in...' : 'Sign in'}
       </Button>
